@@ -1,7 +1,7 @@
 {
-  "name": "vite-template-solid",
-  "version": "0.0.0",
-  "description": "",
+  "name": "convokeep",
+  "version": "2.0.0",
+  "description": "Privacy-first AI conversation archive",
   "type": "module",
   "scripts": {
     "start": "vite",
@@ -14,6 +14,7 @@
     "@tailwindcss/vite": "^4.1.13",
     "solid-devtools": "^0.34.3",
     "tailwindcss": "^4.1.13",
+    "terser": "^5.36.0",
     "typescript": "^5.9.2",
     "vite": "^7.1.4",
     "vite-plugin-solid": "^2.11.8"

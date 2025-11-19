@@ -10,5 +10,18 @@ export default defineConfig({
   },
   build: {
     target: 'esnext',
+    minify: 'terser',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['solid-js'],
+          'database': ['./src/database/index.js'],
+        }
+      }
+    }
+  },
+  // Optimize dependencies
+  optimizeDeps: {
+    include: ['solid-js'],
   },
 });
