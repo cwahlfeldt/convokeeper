@@ -123,86 +123,79 @@ export default function UploadModal(props: UploadModalProps) {
   };
 
   return (
-    <Show when={props.isOpen}>
-      <div class="modal-overlay" onClick={handleClose}>
-        <div class="modal-content" onClick={(e) => e.stopPropagation()}>
-          <div class="modal-header">
-            <h2>Upload Conversations</h2>
-            <button
-              class="modal-close"
-              onClick={handleClose}
-              disabled={uploading()}
-              aria-label="Close"
-            >
-              ×
-            </button>
-          </div>
+    <div
+      class="upload-modal"
+      style={{ display: props.isOpen ? 'block' : 'none' }}
+      onClick={handleClose}
+      role="dialog"
+      aria-labelledby="upload-modal-title"
+      aria-modal="true"
+    >
+      <div class="upload-modal-content" onClick={(e) => e.stopPropagation()}>
+        <button
+          class="close-modal"
+          onClick={handleClose}
+          disabled={uploading()}
+          aria-label="Close upload modal"
+        >
+          ×
+        </button>
 
-          <div class="modal-body">
-            <Show
-              when={!uploading()}
-              fallback={
-                <div class="upload-progress">
-                  <div class="progress-bar">
-                    <div
-                      class="progress-fill"
-                      style={{ width: `${progress()}%` }}
-                    />
-                  </div>
-                  <p class="progress-status">{status()}</p>
+        <div class="upload-section">
+          <h2 id="upload-modal-title">Upload Conversations</h2>
+
+          <Show
+            when={!uploading()}
+            fallback={
+              <div class="upload-progress">
+                <div id="progress-container" class="progress-container">
+                  <div
+                    id="progress-bar"
+                    class="progress-bar"
+                    style={{ width: `${progress()}%` }}
+                  />
                 </div>
-              }
-            >
-              <div
-                class="upload-dropzone"
-                classList={{ active: dragActive() }}
-                onDragEnter={handleDragEnter}
-                onDragLeave={handleDragLeave}
-                onDragOver={handleDragOver}
-                onDrop={handleDrop}
-                onClick={handleClickUpload}
-              >
-                <div class="upload-icon">📁</div>
-                <p class="upload-text">
-                  Drag and drop your conversation export file here
-                </p>
-                <p class="upload-subtext">or click to browse</p>
-                <p class="upload-formats">
-                  Supported: ChatGPT (.zip, .json), Claude (.json, .txt)
-                </p>
+                <div id="upload-status" class="upload-status">{status()}</div>
               </div>
-
+            }
+          >
+            <div
+              id="drop-area"
+              class="drop-area"
+              classList={{ active: dragActive() }}
+              onDragEnter={handleDragEnter}
+              onDragLeave={handleDragLeave}
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              onClick={handleClickUpload}
+              role="region"
+              aria-description="File upload area"
+            >
+              <p>Drag and drop your .zip or .json file here</p>
+              <p>or</p>
               <input
                 ref={fileInputRef}
                 type="file"
+                id="file-input"
                 accept=".zip,.json,.txt"
-                style={{ display: 'none' }}
                 onChange={(e) => handleFileSelect(e.target.files)}
+                aria-label="Choose file to upload"
               />
-            </Show>
+              <label htmlFor="file-input" class="file-input-label">Choose File</label>
+            </div>
+          </Show>
 
-            <Show when={error()}>
-              <div class="error-message">
-                <strong>Error:</strong> {error()}
-              </div>
-            </Show>
+          <Show when={error()}>
+            <div class="upload-status error-message">
+              <strong>Error:</strong> {error()}
+            </div>
+          </Show>
 
-            <Show when={status() && !uploading()}>
-              <div class="success-message">{status()}</div>
-            </Show>
-          </div>
-
-          <div class="modal-footer">
-            <button
-              class="btn btn-secondary"
-              onClick={handleClose}
-              disabled={uploading()}
-            >
-              {uploading() ? 'Please wait...' : 'Close'}
-            </button>
-          </div>
+          <Show when={status() && !uploading()}>
+            <div class="upload-status success-message">{status()}</div>
+          </Show>
         </div>
       </div>
-    </Show>
+    </div>
   );
 }
