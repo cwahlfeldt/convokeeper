@@ -69,6 +69,7 @@ export function ConversationProvider(props: { children: JSX.Element }) {
   const [currentConversation, setCurrentConversation] = createSignal<Conversation | null>(null);
   const [loading, setLoading] = createSignal(false);
   const [initialized, setInitialized] = createSignal(false);
+  const [reloadTrigger, setReloadTrigger] = createSignal(0);
 
   // Filters
   const [filters, setFilters] = createStore<Filters>({
@@ -101,6 +102,9 @@ export function ConversationProvider(props: { children: JSX.Element }) {
   // Load conversations when filters or pagination change
   createEffect(async () => {
     if (!initialized()) return;
+
+    // Track reloadTrigger to force reload when needed
+    reloadTrigger();
 
     setLoading(true);
 
@@ -180,9 +184,8 @@ export function ConversationProvider(props: { children: JSX.Element }) {
 
   // Reload conversations
   const reload = async () => {
-    // Trigger reload by accessing reactive dependencies
-    const currentPage = pagination.currentPage;
-    setPagination('currentPage', currentPage);
+    // Increment reload trigger to force effect to re-run
+    setReloadTrigger(prev => prev + 1);
   };
 
   // Toggle star
