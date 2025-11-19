@@ -4,10 +4,12 @@
  * Displays the messages of the currently selected conversation
  */
 
-import { Show, For } from 'solid-js';
+import { Show, For, createEffect } from 'solid-js';
 import { useConversations } from '../contexts/ConversationContext';
 import { createMarkdownRenderer } from '../utils/markdownUtils.js';
 import { formatters } from '../utils/formatUtils.js';
+import hljs from 'highlight.js';
+import 'highlight.js/styles/github-dark.css';
 
 interface Message {
   role: string;
@@ -30,6 +32,21 @@ export default function MessageViewer() {
       return content;
     }
   };
+
+  // Apply syntax highlighting to code blocks when conversation changes
+  createEffect(() => {
+    // Track the current conversation to re-run when it changes
+    const conversation = currentConversation();
+
+    if (conversation) {
+      // Wait for next tick to ensure DOM is updated
+      setTimeout(() => {
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightElement(block as HTMLElement);
+        });
+      }, 0);
+    }
+  });
 
   const getRoleClass = (role: string): string => {
     const normalizedRole = role.toLowerCase();
