@@ -4,6 +4,7 @@ import { render } from 'solid-js/web';
 import 'solid-devtools';
 
 import App from './App';
+import { registerServiceWorker } from './sw-register';
 
 const root = document.getElementById('root');
 
@@ -14,3 +15,8 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
 }
 
 render(() => <App />, root!);
+
+// Register service worker for offline functionality (production only)
+if (import.meta.env.PROD) {
+  registerServiceWorker();
+}

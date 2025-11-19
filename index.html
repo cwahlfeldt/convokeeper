@@ -2,11 +2,68 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0" />
+
+    <!-- SEO Meta Tags -->
+    <title>ConvoKeep - Private AI Conversation Archive | Store Claude and ChatGPT Chats</title>
+    <meta name="description" content="ConvoKeep is a privacy-first tool to archive, search, and browse your AI conversations from ChatGPT, Claude, and other LLMs. All data stays in your browser via IndexedDB." />
+    <meta name="keywords" content="AI conversation archive, ChatGPT history, Claude chats, LLM conversations, privacy-first, local storage" />
+    <meta name="author" content="ConvoKeep" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://convokeepai.com/" />
+
+    <!-- Open Graph / Social Media Tags -->
+    <meta property="og:title" content="ConvoKeep - Private AI Conversation Archive" />
+    <meta property="og:description" content="Store, search, and view your AI conversations locally with privacy-first design. No cloud storage or API keys required." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://convokeepai.com/" />
+    <meta property="og:image" content="/og-image.jpg" />
+
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ConvoKeep - Private AI Conversation Archive" />
+    <meta name="twitter:description" content="Store, search, and view your AI conversations locally with privacy-first design." />
+    <meta name="twitter:image" content="/og-image.jpg" />
+
+    <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#7287fd" />
-    <meta name="description" content="Privacy-first AI conversation archive - Store and organize your ChatGPT, Claude, and other AI conversations locally" />
-    <title>ConvoKeep - Privacy-first Conversation Archive</title>
-    <link rel="icon" href="/assets/icons/favicon.ico" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="msapplication-TileColor" content="#7287fd" />
+    <meta name="msapplication-TileImage" content="/icons/mstile-144x144.png" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="/icons/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-touch-icon.png" />
+
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "ConvoKeep",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "description": "A privacy-focused web application for archiving, viewing, and searching AI conversations from ChatGPT, Claude, and other large language models.",
+      "featureList": [
+        "Privacy-First Design - All data stays in your browser via IndexedDB",
+        "Multiple Source Support - Compatible with ChatGPT and Claude exports",
+        "Rich Search - Search conversation titles and content",
+        "Markdown Rendering with syntax highlighting"
+      ]
+    }
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
