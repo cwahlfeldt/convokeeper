@@ -6,6 +6,7 @@
 
 import { Show } from 'solid-js';
 import { useConversations } from '../contexts/ConversationContext';
+import FuzzySearch from './FuzzySearch';
 
 export default function FilterBar() {
   const { filters, setFilter, clearFilters } = useConversations();
@@ -33,6 +34,9 @@ export default function FilterBar() {
 
   return (
     <div class="filter-bar">
+      {/* Fuzzy Search */}
+      <FuzzySearch />
+
       {/* Source Filter */}
       <div class="filter-group">
         <label for="source-filter" class="filter-label">Source:</label>

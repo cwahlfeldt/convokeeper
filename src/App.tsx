@@ -21,6 +21,7 @@ import './styles/base.css';
 import './styles/layout.css';
 import './styles/components.css';
 import './styles/messages.css';
+import './styles/fuzzy-search-new.css';
 import './styles/responsive.css';
 import './styles/utilities.css';
 
