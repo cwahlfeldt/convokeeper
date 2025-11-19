@@ -8,8 +8,35 @@ class MockIDBRequest {
   onerror: ((event: any) => void) | null = null;
 }
 
+class MockIDBIndex {
+  private store: MockIDBObjectStore;
+
+  constructor(store: MockIDBObjectStore) {
+    this.store = store;
+  }
+
+  openCursor() {
+    const request = new MockIDBRequest();
+    setTimeout(() => {
+      request.result = null; // Empty cursor
+      if (request.onsuccess) request.onsuccess({ target: request });
+    }, 0);
+    return request;
+  }
+
+  count() {
+    const request = new MockIDBRequest();
+    setTimeout(() => {
+      request.result = this.store.data.size;
+      if (request.onsuccess) request.onsuccess({ target: request });
+    }, 0);
+    return request;
+  }
+}
+
 class MockIDBObjectStore {
   data: Map<string, any> = new Map();
+  private indices: Map<string, MockIDBIndex> = new Map();
 
   put(value: any, key?: any) {
     const request = new MockIDBRequest();
@@ -37,6 +64,37 @@ class MockIDBObjectStore {
       if (request.onsuccess) request.onsuccess({ target: request });
     }, 0);
     return request;
+  }
+
+  count() {
+    const request = new MockIDBRequest();
+    setTimeout(() => {
+      request.result = this.data.size;
+      if (request.onsuccess) request.onsuccess({ target: request });
+    }, 0);
+    return request;
+  }
+
+  index(name: string) {
+    if (!this.indices.has(name)) {
+      this.indices.set(name, new MockIDBIndex(this));
+    }
+    return this.indices.get(name)!;
+  }
+
+  openCursor() {
+    const request = new MockIDBRequest();
+    setTimeout(() => {
+      request.result = null; // Empty cursor
+      if (request.onsuccess) request.onsuccess({ target: request });
+    }, 0);
+    return request;
+  }
+
+  createIndex(name: string, keyPath: string | string[], options?: any) {
+    const index = new MockIDBIndex(this);
+    this.indices.set(name, index);
+    return index;
   }
 }
 

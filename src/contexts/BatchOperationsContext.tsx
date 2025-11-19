@@ -6,7 +6,6 @@
  */
 
 import { createContext, useContext, createSignal, JSX, Accessor } from 'solid-js';
-import { createStore } from 'solid-js/store';
 import {
   bulkDeleteConversations,
   bulkUpdateConversations
@@ -31,21 +30,21 @@ interface BatchOperationsContextValue {
 const BatchOperationsContext = createContext<BatchOperationsContextValue>();
 
 export function BatchOperationsProvider(props: { children: JSX.Element }) {
-  const [selectedSet, setSelectedSet] = createStore<Set<string>>(new Set());
+  const [selectedSet, setSelectedSet] = createSignal<Set<string>>(new Set());
   const [isProcessing, setIsProcessing] = createSignal(false);
 
   // Get selected IDs as array
-  const selectedIds = () => Array.from(selectedSet);
+  const selectedIds = () => Array.from(selectedSet());
 
   // Get selection count
-  const selectionCount = () => selectedSet.size;
+  const selectionCount = () => selectedSet().size;
 
   // Check if ID is selected
-  const isSelected = (id: string) => selectedSet.has(id);
+  const isSelected = (id: string) => selectedSet().has(id);
 
   // Toggle selection
   const toggleSelection = (id: string) => {
-    const newSet = new Set(selectedSet);
+    const newSet = new Set(selectedSet());
     if (newSet.has(id)) {
       newSet.delete(id);
     } else {
@@ -66,9 +65,9 @@ export function BatchOperationsProvider(props: { children: JSX.Element }) {
 
   // Delete selected conversations
   const deleteSelected = async (onComplete?: () => void) => {
-    if (selectedSet.size === 0) return;
+    if (selectedSet().size === 0) return;
 
-    const count = selectedSet.size;
+    const count = selectedSet().size;
     const confirmed = confirm(
       `Delete ${count} conversation${count > 1 ? 's' : ''}? This cannot be undone.`
     );
@@ -77,7 +76,7 @@ export function BatchOperationsProvider(props: { children: JSX.Element }) {
 
     setIsProcessing(true);
     try {
-      await bulkDeleteConversations(Array.from(selectedSet));
+      await bulkDeleteConversations(Array.from(selectedSet()));
       deselectAll();
       if (onComplete) onComplete();
     } catch (error) {
@@ -90,11 +89,11 @@ export function BatchOperationsProvider(props: { children: JSX.Element }) {
 
   // Star selected conversations
   const starSelected = async (onComplete?: () => void) => {
-    if (selectedSet.size === 0) return;
+    if (selectedSet().size === 0) return;
 
     setIsProcessing(true);
     try {
-      await bulkUpdateConversations(Array.from(selectedSet), { starred: true });
+      await bulkUpdateConversations(Array.from(selectedSet()), { starred: true });
       deselectAll();
       if (onComplete) onComplete();
     } catch (error) {
@@ -107,11 +106,11 @@ export function BatchOperationsProvider(props: { children: JSX.Element }) {
 
   // Unstar selected conversations
   const unstarSelected = async (onComplete?: () => void) => {
-    if (selectedSet.size === 0) return;
+    if (selectedSet().size === 0) return;
 
     setIsProcessing(true);
     try {
-      await bulkUpdateConversations(Array.from(selectedSet), { starred: false });
+      await bulkUpdateConversations(Array.from(selectedSet()), { starred: false });
       deselectAll();
       if (onComplete) onComplete();
     } catch (error) {
@@ -124,11 +123,11 @@ export function BatchOperationsProvider(props: { children: JSX.Element }) {
 
   // Archive selected conversations
   const archiveSelected = async (onComplete?: () => void) => {
-    if (selectedSet.size === 0) return;
+    if (selectedSet().size === 0) return;
 
     setIsProcessing(true);
     try {
-      await bulkUpdateConversations(Array.from(selectedSet), { archived: true });
+      await bulkUpdateConversations(Array.from(selectedSet()), { archived: true });
       deselectAll();
       if (onComplete) onComplete();
     } catch (error) {
@@ -141,11 +140,11 @@ export function BatchOperationsProvider(props: { children: JSX.Element }) {
 
   // Unarchive selected conversations
   const unarchiveSelected = async (onComplete?: () => void) => {
-    if (selectedSet.size === 0) return;
+    if (selectedSet().size === 0) return;
 
     setIsProcessing(true);
     try {
-      await bulkUpdateConversations(Array.from(selectedSet), { archived: false });
+      await bulkUpdateConversations(Array.from(selectedSet()), { archived: false });
       deselectAll();
       if (onComplete) onComplete();
     } catch (error) {
@@ -158,11 +157,11 @@ export function BatchOperationsProvider(props: { children: JSX.Element }) {
 
   // Tag selected conversations
   const tagSelected = async (tags: string[], onComplete?: () => void) => {
-    if (selectedSet.size === 0) return;
+    if (selectedSet().size === 0) return;
 
     setIsProcessing(true);
     try {
-      await bulkUpdateConversations(Array.from(selectedSet), { tags });
+      await bulkUpdateConversations(Array.from(selectedSet()), { tags });
       deselectAll();
       if (onComplete) onComplete();
     } catch (error) {
