@@ -4,7 +4,7 @@
  * Displays the messages of the currently selected conversation
  */
 
-import { Show, For, createSignal, onMount } from 'solid-js';
+import { Show, For } from 'solid-js';
 import { useConversations } from '../contexts/ConversationContext';
 import { createMarkdownRenderer } from '../utils/markdownUtils.js';
 import { formatters } from '../utils/formatUtils.js';
@@ -18,20 +18,13 @@ interface Message {
 
 export default function MessageViewer() {
   const { currentConversation } = useConversations();
-  const [markdownRenderer, setMarkdownRenderer] = createSignal<any>(null);
 
-  onMount(async () => {
-    // Initialize markdown renderer
-    const renderer = await createMarkdownRenderer();
-    setMarkdownRenderer(() => renderer);
-  });
+  // Create markdown renderer once (now synchronous)
+  const markdownRenderer = createMarkdownRenderer();
 
   const renderMessage = (content: string): string => {
-    const renderer = markdownRenderer();
-    if (!renderer) return content;
-
     try {
-      return renderer.render(content);
+      return markdownRenderer.render(content);
     } catch (error) {
       console.error('Error rendering markdown:', error);
       return content;

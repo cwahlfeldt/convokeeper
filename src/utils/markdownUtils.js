@@ -1,25 +1,18 @@
 /**
  * Markdown Utilities
- * 
+ *
  * Functions for rendering and processing markdown.
  */
+
+import MarkdownIt from 'markdown-it';
 
 /**
  * Create a markdown renderer with proper configuration and security measures
  * @returns {Object} - Configured markdown renderer
  */
 export function createMarkdownRenderer() {
-  // Check if markdown-it is available
-  if (!window.markdownit) {
-    console.warn('markdown-it library not found');
-    
-    return {
-      render: (text) => escapeHtml(text),
-    };
-  }
-  
   // Create markdown renderer with strict security settings
-  const md = window.markdownit({
+  const md = MarkdownIt({
     html: false,              // Disable HTML completely for security
     breaks: true,             // Convert \n to <br>
     linkify: false,           // Don't auto-convert text to links
