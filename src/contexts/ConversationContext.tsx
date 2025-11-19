@@ -104,11 +104,13 @@ export function ConversationProvider(props: { children: JSX.Element }) {
     if (!initialized()) return;
 
     // Track reloadTrigger to force reload when needed
-    reloadTrigger();
+    const trigger = reloadTrigger();
+    console.log('[ConversationContext] Effect triggered, reloadTrigger:', trigger);
 
     setLoading(true);
 
     try {
+      console.log('[ConversationContext] Fetching conversations from DB...');
       const result = await getConversations({
         page: pagination.currentPage,
         source: filters.source !== 'all' ? filters.source : undefined,
@@ -120,13 +122,15 @@ export function ConversationProvider(props: { children: JSX.Element }) {
         limit: pagination.perPage
       });
 
+      console.log('[ConversationContext] Fetched conversations:', result.conversations?.length || 0, 'Total:', result.pagination?.totalConversations || 0);
+
       setConversations(result.conversations || []);
       setPagination({
         totalPages: result.pagination?.totalPages || 1,
         totalConversations: result.pagination?.totalConversations || 0
       });
     } catch (error) {
-      console.error('Failed to load conversations:', error);
+      console.error('[ConversationContext] Failed to load conversations:', error);
       setConversations([]);
     } finally {
       setLoading(false);
@@ -185,7 +189,12 @@ export function ConversationProvider(props: { children: JSX.Element }) {
   // Reload conversations
   const reload = async () => {
     // Increment reload trigger to force effect to re-run
-    setReloadTrigger(prev => prev + 1);
+    console.log('[ConversationContext] reload() called, incrementing trigger');
+    setReloadTrigger(prev => {
+      const next = prev + 1;
+      console.log('[ConversationContext] Trigger updated:', prev, '->', next);
+      return next;
+    });
   };
 
   // Toggle star

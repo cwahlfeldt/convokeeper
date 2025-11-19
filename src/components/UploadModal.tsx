@@ -48,8 +48,11 @@ export default function UploadModal(props: UploadModalProps) {
     setStatus('Reading file...');
 
     try {
+      console.log('[Upload] Starting file processing:', file.name);
+
       // Process the file
       const conversations = await processFile(file);
+      console.log('[Upload] Processed conversations:', conversations?.length || 0);
 
       if (!conversations || conversations.length === 0) {
         throw new Error('No conversations found in file');
@@ -59,20 +62,28 @@ export default function UploadModal(props: UploadModalProps) {
       setProgress(50);
 
       // Store conversations
+      console.log('[Upload] Storing conversations to database...');
       const result = await storeConversations(conversations, (percent: number) => {
         setProgress(50 + (percent / 2)); // Map 0-100 to 50-100
       });
 
+      console.log('[Upload] Store result:', result);
+
       setProgress(100);
       setStatus(`Successfully imported ${result.totalStored} conversations!`);
 
-      // Reload conversations
-      setTimeout(async () => {
-        await reload();
+      // Reload conversations and wait for it to complete
+      console.log('[Upload] Reloading conversations list...');
+      await reload();
+      console.log('[Upload] Reload complete');
+
+      // Wait a bit for UI to update, then close
+      setTimeout(() => {
+        console.log('[Upload] Closing modal');
         handleClose();
       }, 1500);
     } catch (err: any) {
-      console.error('Upload error:', err);
+      console.error('[Upload] Error:', err);
       setError(err.message || 'Failed to process file');
       setStatus('');
     } finally {
