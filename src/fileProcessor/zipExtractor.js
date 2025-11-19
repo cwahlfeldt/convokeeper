@@ -1,9 +1,11 @@
 /**
  * ZipExtractor Module
- * 
+ *
  * Specialized for handling zip file extraction.
  * Uses JSZip to extract content from zip/dms files.
  */
+
+import JSZip from 'jszip';
 
 export class ZipExtractor {
   /**
@@ -12,11 +14,6 @@ export class ZipExtractor {
    * @returns {Promise<Object>} - Promise resolving to JSZip object
    */
   async extractZip(data) {
-    // Ensure JSZip is available
-    if (!window.JSZip) {
-      throw new Error('JSZip library not loaded');
-    }
-    
     try {
       // Load the zip file
       const zip = new JSZip();
