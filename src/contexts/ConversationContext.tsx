@@ -113,7 +113,7 @@ export function ConversationProvider(props: { children: JSX.Element }) {
       console.log('[ConversationContext] Fetching conversations from DB...');
       const result = await getConversations({
         page: pagination.currentPage,
-        source: filters.source !== 'all' ? filters.source : undefined,
+        source: filters.source, // Pass 'all' directly, repository handles it
         sortOrder: filters.sortOrder,
         starred: filters.starred || undefined,
         archived: filters.archived || undefined,
