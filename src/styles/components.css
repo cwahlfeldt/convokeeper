@@ -215,45 +215,54 @@
 /* Conversation Item */
 .conversation-item {
   cursor: pointer;
-  transition: all var(--transition);
+  transition: all 0.15s ease;
+  border: 2px solid var(--color-border);
   border-left: 4px solid transparent;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-md);
-  margin: var(--space-sm) var(--space-md);
-  background-color: var(--color-bg);
+  border-radius: var(--radius-lg);
+  padding: var(--space-lg);
+  margin: var(--space-md) var(--space-md);
+  background-color: var(--color-bg-alt);
   display: flex;
-  gap: var(--space-sm);
+  gap: var(--space-md);
   align-items: flex-start;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  position: relative;
 }
 
 .conversation-item:hover {
-  background-color: var(--color-bg-dim);
+  background-color: var(--color-bg);
   border-color: var(--color-accent);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  border-left-color: var(--color-accent);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12), 0 0 0 1px var(--color-accent);
 }
 
 .conversation-item.active {
-  background-color: var(--color-bg-dim);
+  background-color: var(--color-bg);
+  border: 2px solid var(--color-accent);
   border-left: 4px solid var(--color-accent);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 12px rgba(114, 135, 253, 0.2);
 }
 
 .conversation-item.selected {
-  background-color: rgba(114, 135, 253, 0.08);
+  background-color: rgba(114, 135, 253, 0.12);
   border-color: var(--color-accent);
+  border-left-color: var(--color-accent);
 }
 
 .conversation-item-checkbox-wrapper {
   display: flex;
   align-items: flex-start;
-  padding-top: 2px;
-  opacity: 0.6;
-  transition: opacity var(--transition);
+  padding-top: 4px;
+  opacity: 0.4;
+  transition: all var(--transition);
 }
 
 .conversation-item:hover .conversation-item-checkbox-wrapper {
+  opacity: 1;
+}
+
+.conversation-item.selected .conversation-item-checkbox-wrapper {
   opacity: 1;
 }
 
@@ -273,13 +282,14 @@
 }
 
 .conversation-item-title {
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 1rem;
+  font-size: 1.05rem;
   flex: 1;
   line-height: 1.4;
+  color: var(--color-text);
 }
 
 .conversation-item-meta {
@@ -287,14 +297,17 @@
   gap: 0.5rem;
   align-items: center;
   font-size: var(--font-size-xs);
-  opacity: 0.8;
+  opacity: 0.85;
   color: var(--color-text-muted);
 }
 
 .conversation-item-source {
-  font-weight: 600;
+  font-weight: 700;
   font-stretch: 95%;
   text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-accent);
+  opacity: 0.9;
 }
 
 .conversation-item-archived-badge {
@@ -1294,29 +1307,32 @@
 
 /* Conversation Item Enhancements */
 .conversation-item-checkbox {
-  width: 18px;
-  height: 18px;
-  margin-right: var(--space-sm);
+  width: 20px;
+  height: 20px;
   cursor: pointer;
   accent-color: var(--color-accent);
   flex-shrink: 0;
 }
 
 .conversation-item-star {
-  font-size: 1.3em;
+  font-size: 1.4em;
   cursor: pointer;
-  opacity: 0.5;
+  opacity: 0.4;
   transition: all var(--transition);
   flex-shrink: 0;
-  padding: var(--space-xs);
+  padding: 4px 6px;
   border-radius: var(--radius-sm);
   line-height: 1;
 }
 
 .conversation-item-star:hover {
   opacity: 1;
-  transform: scale(1.15);
-  background-color: rgba(128, 128, 128, 0.1);
+  transform: scale(1.2);
+  background-color: rgba(128, 128, 128, 0.15);
+}
+
+.conversation-item:hover .conversation-item-star {
+  opacity: 0.7;
 }
 
 .conversation-item-star.starred {
@@ -1337,26 +1353,29 @@
 .conversation-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--space-xs);
-  margin-top: var(--space-xs);
+  gap: 6px;
+  margin-top: 6px;
 }
 
 .conversation-tag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 2px 8px;
-  background-color: var(--color-bg-dim);
-  color: var(--color-text-muted);
+  padding: 3px 10px;
+  background-color: var(--ctp-surface0);
+  color: var(--color-text);
   border-radius: var(--radius-round);
   font-size: var(--font-size-xs);
-  border: 1px solid var(--color-border);
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: all var(--transition);
 }
 
 .conversation-tag:hover {
   background-color: var(--color-accent);
   color: var(--ctp-base);
   border-color: var(--color-accent);
+  transform: translateY(-1px);
 }
 
 /* Tag Management Modal */
