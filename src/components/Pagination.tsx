@@ -77,9 +77,18 @@ export default function Pagination() {
     <Show when={pagination.totalPages > 1}>
       <div class="pagination-container">
         <div class="pagination" role="navigation" aria-label="Pagination">
+          <div class="pagination-info">
+            Page {pagination.currentPage} of {pagination.totalPages}
+            {pagination.totalConversations > 0 && (
+              <span class="pagination-count">
+                ({pagination.totalConversations} total)
+              </span>
+            )}
+          </div>
+
           <div class="pagination-controls">
             <button
-              class="pagination-button pagination-prev"
+              class="pagination-button"
               onClick={goToFirst}
               disabled={pagination.currentPage === 1}
               aria-label="Go to first page"
@@ -89,47 +98,45 @@ export default function Pagination() {
             </button>
 
             <button
-              class="pagination-button pagination-prev"
+              class="pagination-button"
               onClick={goToPrevious}
               disabled={pagination.currentPage === 1}
               aria-label="Go to previous page"
               title="Previous page"
             >
-              «
+              ‹
             </button>
 
-            <div class="pagination-pages">
-              {getPageNumbers().map((page) => (
-                <>
-                  {typeof page === 'number' ? (
-                    <button
-                      class="pagination-button"
-                      classList={{ active: page === pagination.currentPage }}
-                      onClick={() => goToPage(page)}
-                      aria-label={`Go to page ${page}`}
-                      aria-current={page === pagination.currentPage ? 'page' : undefined}
-                    >
-                      {page}
-                    </button>
-                  ) : (
-                    <span class="pagination-ellipsis">{page}</span>
-                  )}
-                </>
-              ))}
-            </div>
+            {getPageNumbers().map((page) => (
+              <>
+                {typeof page === 'number' ? (
+                  <button
+                    class="pagination-button pagination-page"
+                    classList={{ active: page === pagination.currentPage }}
+                    onClick={() => goToPage(page)}
+                    aria-label={`Go to page ${page}`}
+                    aria-current={page === pagination.currentPage ? 'page' : undefined}
+                  >
+                    {page}
+                  </button>
+                ) : (
+                  <span class="pagination-ellipsis">{page}</span>
+                )}
+              </>
+            ))}
 
             <button
-              class="pagination-button pagination-next"
+              class="pagination-button"
               onClick={goToNext}
               disabled={pagination.currentPage === pagination.totalPages}
               aria-label="Go to next page"
               title="Next page"
             >
-              »
+              ›
             </button>
 
             <button
-              class="pagination-button pagination-next"
+              class="pagination-button"
               onClick={goToLast}
               disabled={pagination.currentPage === pagination.totalPages}
               aria-label="Go to last page"
@@ -137,17 +144,6 @@ export default function Pagination() {
             >
               »»
             </button>
-          </div>
-
-          <div class="pagination-info">
-            <span class="pagination-current">
-              Page {pagination.currentPage} of {pagination.totalPages}
-            </span>
-            {pagination.totalConversations > 0 && (
-              <span class="pagination-total">
-                • {pagination.totalConversations} conversation{pagination.totalConversations !== 1 ? 's' : ''}
-              </span>
-            )}
           </div>
         </div>
       </div>

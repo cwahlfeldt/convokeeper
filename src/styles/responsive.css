@@ -42,23 +42,22 @@
   
   /* Pagination adjustments for tablet */
   .pagination-container {
-    padding: var(--space-sm) var(--space-md);
+    padding: var(--space-sm);
   }
 
-  .pagination-pages {
-    gap: 4px;
+  .pagination {
+    gap: var(--space-sm);
   }
 
   .pagination-button {
-    min-width: 34px;
-    height: 34px;
-    padding: 6px 10px;
+    min-width: 36px;
+    min-height: 36px;
+    padding: var(--space-xs) var(--space-sm);
     font-size: var(--font-size-sm);
   }
 
-  .pagination-prev,
-  .pagination-next {
-    min-width: 40px;
+  .pagination-info {
+    font-size: var(--font-size-xs);
   }
   
   /* Show mobile search */
@@ -205,32 +204,31 @@
   
   /* Make pagination more compact on mobile */
   .pagination-container {
-    padding: var(--space-xs) var(--space-sm);
+    padding: var(--space-xs);
   }
 
-  .pagination-pages {
-    gap: 3px;
+  .pagination {
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .pagination-controls {
+    gap: 4px;
   }
 
   .pagination-button {
     min-width: 32px;
-    height: 32px;
-    padding: 4px 8px;
-    font-size: 0.8rem;
-  }
-
-  .pagination-prev,
-  .pagination-next {
-    min-width: 36px;
-    font-size: 0.9rem;
+    min-height: 32px;
+    padding: var(--space-xs);
+    font-size: var(--font-size-sm);
   }
 
   .pagination-info {
     font-size: 0.7rem;
-    gap: 4px;
+    order: -1;
   }
 
-  .pagination-total {
+  .pagination-count {
     display: none;
   }
   
