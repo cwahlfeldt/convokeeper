@@ -15,45 +15,37 @@ import ConversationList from './components/ConversationList';
 import MessageViewer from './components/MessageViewer';
 import UploadModal from './components/UploadModal';
 
-function AppHeader() {
+function AppHeader(props: { onUploadClick: () => void }) {
   const { theme, toggleTheme } = useTheme();
-  const [uploadModalOpen, setUploadModalOpen] = createSignal(false);
 
   return (
-    <>
-      <header class="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
-        <div class="flex flex-col">
-          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">ConvoKeep</h1>
-          <p class="text-sm text-gray-600 dark:text-gray-400">Privacy-first conversation archive</p>
-        </div>
+    <header class="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+      <div class="flex flex-col">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">ConvoKeep</h1>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Privacy-first conversation archive</p>
+      </div>
 
-        <div class="flex gap-3">
-          <button
-            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium
-                   transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            onClick={() => setUploadModalOpen(true)}
-            aria-label="Upload conversations"
-          >
-            📁 Upload
-          </button>
+      <div class="flex gap-3">
+        <button
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium
+                 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          onClick={props.onUploadClick}
+          aria-label="Upload conversations"
+        >
+          📁 Upload
+        </button>
 
-          <button
-            class="px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
-                   text-gray-900 dark:text-gray-100 rounded-lg transition-colors
-                   focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${theme() === 'light' ? 'dark' : 'light'} mode`}
-          >
-            {theme() === 'light' ? '🌙' : '☀️'}
-          </button>
-        </div>
-      </header>
-
-      <UploadModal
-        isOpen={uploadModalOpen()}
-        onClose={() => setUploadModalOpen(false)}
-      />
-    </>
+        <button
+          class="px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
+                 text-gray-900 dark:text-gray-100 rounded-lg transition-colors
+                 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+          onClick={toggleTheme}
+          aria-label={`Switch to ${theme() === 'light' ? 'dark' : 'light'} mode`}
+        >
+          {theme() === 'light' ? '🌙' : '☀️'}
+        </button>
+      </div>
+    </header>
   );
 }
 
@@ -140,15 +132,23 @@ function AppContent() {
 }
 
 function App() {
+  const [uploadModalOpen, setUploadModalOpen] = createSignal(false);
+
   return (
     <ThemeProvider>
       <ConversationProvider>
         <BatchOperationsProvider>
           <TagProvider>
             <div class="h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-              <AppHeader />
+              <AppHeader onUploadClick={() => setUploadModalOpen(true)} />
               <AppContent />
             </div>
+
+            {/* Render modal at root level for proper overlay */}
+            <UploadModal
+              isOpen={uploadModalOpen()}
+              onClose={() => setUploadModalOpen(false)}
+            />
           </TagProvider>
         </BatchOperationsProvider>
       </ConversationProvider>
