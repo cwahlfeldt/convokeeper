@@ -39,7 +39,17 @@ export function ThemeProvider(props: { children: JSX.Element }) {
   // Apply theme to document
   createEffect(() => {
     const currentTheme = theme();
+
+    // Toggle 'dark' class for Tailwind CSS
+    if (currentTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+
+    // Keep data-theme attribute for compatibility
     document.documentElement.setAttribute('data-theme', currentTheme);
+
     localStorage.setItem('theme', currentTheme);
   });
 
