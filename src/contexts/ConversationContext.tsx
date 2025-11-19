@@ -69,6 +69,7 @@ export function ConversationProvider(props: { children: JSX.Element }) {
   const [currentConversation, setCurrentConversation] = createSignal<Conversation | null>(null);
   const [loading, setLoading] = createSignal(false);
   const [initialized, setInitialized] = createSignal(false);
+  const [reloadTrigger, setReloadTrigger] = createSignal(0);
 
   // Filters
   const [filters, setFilters] = createStore<Filters>({
@@ -102,12 +103,17 @@ export function ConversationProvider(props: { children: JSX.Element }) {
   createEffect(async () => {
     if (!initialized()) return;
 
+    // Track reloadTrigger to force reload when needed
+    const trigger = reloadTrigger();
+    console.log('[ConversationContext] Effect triggered, reloadTrigger:', trigger);
+
     setLoading(true);
 
     try {
+      console.log('[ConversationContext] Fetching conversations from DB...');
       const result = await getConversations({
         page: pagination.currentPage,
-        source: filters.source !== 'all' ? filters.source : undefined,
+        source: filters.source, // Pass 'all' directly, repository handles it
         sortOrder: filters.sortOrder,
         starred: filters.starred || undefined,
         archived: filters.archived || undefined,
@@ -116,13 +122,15 @@ export function ConversationProvider(props: { children: JSX.Element }) {
         limit: pagination.perPage
       });
 
+      console.log('[ConversationContext] Fetched conversations:', result.conversations?.length || 0, 'Total:', result.pagination?.totalConversations || 0);
+
       setConversations(result.conversations || []);
       setPagination({
         totalPages: result.pagination?.totalPages || 1,
         totalConversations: result.pagination?.totalConversations || 0
       });
     } catch (error) {
-      console.error('Failed to load conversations:', error);
+      console.error('[ConversationContext] Failed to load conversations:', error);
       setConversations([]);
     } finally {
       setLoading(false);
@@ -180,9 +188,13 @@ export function ConversationProvider(props: { children: JSX.Element }) {
 
   // Reload conversations
   const reload = async () => {
-    // Trigger reload by accessing reactive dependencies
-    const currentPage = pagination.currentPage;
-    setPagination('currentPage', currentPage);
+    // Increment reload trigger to force effect to re-run
+    console.log('[ConversationContext] reload() called, incrementing trigger');
+    setReloadTrigger(prev => {
+      const next = prev + 1;
+      console.log('[ConversationContext] Trigger updated:', prev, '->', next);
+      return next;
+    });
   };
 
   // Toggle star

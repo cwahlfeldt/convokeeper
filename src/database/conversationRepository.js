@@ -124,6 +124,16 @@ export class ConversationRepository {
           conversation.conversation_id = generateUniqueId('conv');
         }
 
+        // Ensure required fields exist
+        if (!conversation.created_at) {
+          console.warn('[Store] Conversation missing created_at:', conversation.conversation_id);
+          conversation.created_at = new Date().toISOString();
+        }
+        if (!conversation.title) {
+          console.warn('[Store] Conversation missing title:', conversation.conversation_id);
+          conversation.title = 'Untitled Conversation';
+        }
+
         pendingOperations++;
 
         // First check if conversation with this ID already exists
@@ -147,7 +157,7 @@ export class ConversationRepository {
             };
 
             updateRequest.onerror = (e) => {
-              console.error(`Error updating conversation: ${e.target.error}`);
+              console.error(`[Store] Error updating conversation ${conversation.conversation_id}:`, e.target.error);
               hasError = true;
               pendingOperations--;
             };
@@ -162,7 +172,7 @@ export class ConversationRepository {
             };
 
             addRequest.onerror = (e) => {
-              console.error(`Error adding conversation: ${e.target.error}`);
+              console.error(`[Store] Error adding conversation ${conversation.conversation_id}:`, e.target.error);
               hasError = true;
               pendingOperations--;
             };
@@ -170,7 +180,7 @@ export class ConversationRepository {
         };
 
         getRequest.onerror = (e) => {
-          console.error(`Error checking for existing conversation: ${e.target.error}`);
+          console.error(`[Store] Error checking for existing conversation:`, e.target.error);
           hasError = true;
           pendingOperations--;
         };
@@ -201,8 +211,15 @@ export class ConversationRepository {
       try {
         // Get store and index
         const store = this.dbConnector.getObjectStore(this.config.stores.conversations);
+
+        // First check total count in database
+        const countCheckRequest = store.count();
+        countCheckRequest.onsuccess = () => {
+          console.log('[Query] Total conversations in database:', countCheckRequest.result);
+        };
+
         const index = store.index('by_created_at');
-        
+
         // Set direction based on sort order
         const direction = settings.sortOrder === 'newest' ? 'prev' : 'next';
         
@@ -266,20 +283,36 @@ export class ConversationRepository {
         }
         
         // Normal retrieval with pagination
+        console.log('[Query] Opening cursor with settings:', settings);
         const cursorRequest = index.openCursor(null, direction);
-        
+
         const results = [];
         let skipCount = 0;
-        
+        let totalScanned = 0;
+
         cursorRequest.onsuccess = (event) => {
           const cursor = event.target.result;
 
           if (!cursor) {
             // No more results
+            console.log('[Query] Cursor complete. Scanned:', totalScanned, 'Results:', results.length);
             return resolve(results);
           }
 
+          totalScanned++;
           const conversation = cursor.value;
+
+          // Log first few conversations to debug
+          if (totalScanned <= 3) {
+            console.log('[Query] Conversation:', {
+              id: conversation.conversation_id,
+              title: conversation.title,
+              created_at: conversation.created_at,
+              source: conversation.source,
+              starred: conversation.starred,
+              archived: conversation.archived
+            });
+          }
 
           // Apply source filter if not 'all'
           const matchesSource = settings.source === 'all' ||
@@ -305,6 +338,7 @@ export class ConversationRepository {
           if (results.length < settings.limit) {
             cursor.continue();
           } else {
+            console.log('[Query] Limit reached. Scanned:', totalScanned, 'Results:', results.length);
             resolve(results);
           }
         };
