@@ -110,16 +110,44 @@ export class DatabaseManager {
   /**
    * Get conversations with filtering options
    * @param {Object} options - Query options
-   * @returns {Promise<Array>} Conversations matching the query
+   * @returns {Promise<Object>} Object with conversations array and pagination info
    */
   async getConversations(options) {
     // Ensure database is initialized
     if (!this.isInitialized) {
       await this.init();
     }
-    
-    // Use conversation repository for queries
-    return this.conversationRepo.getConversations(options);
+
+    // Get conversations from repository
+    const conversations = await this.conversationRepo.getConversations(options);
+
+    // Get total count for pagination
+    const totalConversations = await this.conversationRepo.getConversations({
+      ...options,
+      countOnly: true
+    });
+
+    // Calculate pagination info
+    const limit = options.limit || 20;
+    const page = options.page || 1;
+    const totalPages = Math.ceil(totalConversations.length / limit);
+
+    console.log('[DatabaseManager] getConversations returning:', {
+      conversationsCount: conversations.length,
+      totalConversations: totalConversations.length,
+      totalPages: totalPages
+    });
+
+    // Return in expected format
+    return {
+      conversations: conversations,
+      pagination: {
+        currentPage: page,
+        totalPages: totalPages,
+        totalConversations: totalConversations.length,
+        perPage: limit
+      }
+    };
   }
   
   /**
