@@ -1,5 +1,5 @@
 {
-  "name": "convokeep",
+  "name": "convokeeper",
   "compatibility_date": "2025-11-19",
   "assets": {
     "directory": "./dist"
