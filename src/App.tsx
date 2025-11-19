@@ -15,31 +15,22 @@ import ConversationList from './components/ConversationList';
 import MessageViewer from './components/MessageViewer';
 import UploadModal from './components/UploadModal';
 
-// Import styles
-import './styles/variables.css';
-import './styles/base.css';
-import './styles/layout.css';
-import './styles/components.css';
-import './styles/messages.css';
-import './styles/fuzzy-search-new.css';
-import './styles/responsive.css';
-import './styles/utilities.css';
-
 function AppHeader() {
   const { theme, toggleTheme } = useTheme();
   const [uploadModalOpen, setUploadModalOpen] = createSignal(false);
 
   return (
     <>
-      <header class="app-header">
-        <div class="app-branding">
-          <h1 class="app-title">ConvoKeep</h1>
-          <p class="app-tagline">Privacy-first conversation archive</p>
+      <header class="flex items-center justify-between px-6 py-4 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700">
+        <div class="flex flex-col">
+          <h1 class="text-2xl font-bold text-gray-900 dark:text-white">ConvoKeep</h1>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Privacy-first conversation archive</p>
         </div>
 
-        <div class="app-actions">
+        <div class="flex gap-3">
           <button
-            class="btn btn-primary"
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium
+                   transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             onClick={() => setUploadModalOpen(true)}
             aria-label="Upload conversations"
           >
@@ -47,7 +38,9 @@ function AppHeader() {
           </button>
 
           <button
-            class="btn btn-icon"
+            class="px-3 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700
+                   text-gray-900 dark:text-gray-100 rounded-lg transition-colors
+                   focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
             onClick={toggleTheme}
             aria-label={`Switch to ${theme() === 'light' ? 'dark' : 'light'} mode`}
           >
@@ -82,14 +75,16 @@ function BatchToolbar() {
 
   return (
     <Show when={selectionCount() > 0}>
-      <div class="batch-toolbar">
-        <div class="batch-info">
+      <div class="flex items-center justify-between px-4 py-2 bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
+        <div class="text-sm font-medium text-blue-900 dark:text-blue-100">
           {selectionCount()} selected
         </div>
 
-        <div class="batch-actions">
+        <div class="flex gap-2">
           <button
-            class="btn btn-sm btn-secondary"
+            class="px-3 py-1 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600
+                   text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600
+                   rounded text-sm font-medium transition-colors"
             onClick={handleStar}
             aria-label="Star selected conversations"
           >
@@ -97,7 +92,9 @@ function BatchToolbar() {
           </button>
 
           <button
-            class="btn btn-sm btn-secondary"
+            class="px-3 py-1 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600
+                   text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-600
+                   rounded text-sm font-medium transition-colors"
             onClick={handleArchive}
             aria-label="Archive selected conversations"
           >
@@ -105,7 +102,8 @@ function BatchToolbar() {
           </button>
 
           <button
-            class="btn btn-sm btn-danger"
+            class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white
+                   rounded text-sm font-medium transition-colors"
             onClick={handleDelete}
             aria-label="Delete selected conversations"
           >
@@ -113,7 +111,8 @@ function BatchToolbar() {
           </button>
 
           <button
-            class="btn btn-sm"
+            class="px-3 py-1 bg-gray-200 dark:bg-gray-600 hover:bg-gray-300 dark:hover:bg-gray-500
+                   text-gray-700 dark:text-gray-200 rounded text-sm font-medium transition-colors"
             onClick={deselectAll}
             aria-label="Deselect all"
           >
@@ -127,13 +126,13 @@ function BatchToolbar() {
 
 function AppContent() {
   return (
-    <div class="app-layout">
-      <aside class="app-sidebar">
+    <div class="flex h-[calc(100vh-73px)]">
+      <aside class="w-96 border-r border-gray-200 dark:border-gray-700 flex flex-col overflow-hidden">
         <BatchToolbar />
         <ConversationList />
       </aside>
 
-      <main class="app-main">
+      <main class="flex-1 overflow-hidden">
         <MessageViewer />
       </main>
     </div>
@@ -146,7 +145,7 @@ function App() {
       <ConversationProvider>
         <BatchOperationsProvider>
           <TagProvider>
-            <div class="app-container">
+            <div class="h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
               <AppHeader />
               <AppContent />
             </div>

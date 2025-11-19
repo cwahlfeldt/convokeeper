@@ -82,7 +82,7 @@ export default function FuzzySearch() {
       // Get best score
       const bestScore = Math.max(titleResult.score, sourceResult.score, tagScore);
 
-      if (bestScore > 0.3) { // Minimum threshold
+      if (bestScore > 0.3) {
         searchResults.push({
           conversation,
           score: bestScore,
@@ -94,7 +94,7 @@ export default function FuzzySearch() {
     // Sort by score
     searchResults.sort((a, b) => b.score - a.score);
 
-    setResults(searchResults.slice(0, 50)); // Max 50 results
+    setResults(searchResults.slice(0, 50));
     setIsOpen(searchResults.length > 0);
     setSelectedIndex(-1);
   };
@@ -105,12 +105,10 @@ export default function FuzzySearch() {
     const query = target.value;
     setSearchQuery(query);
 
-    // Clear previous timer
     if (debounceTimer) {
       clearTimeout(debounceTimer);
     }
 
-    // Set new timer
     debounceTimer = setTimeout(() => {
       performSearch(query);
     }, 300);
@@ -186,7 +184,7 @@ export default function FuzzySearch() {
 
   // Highlight matches in text
   const highlightMatches = (text: string, matches: number[]) => {
-    if (matches.length === 0) return text;
+    if (matches.length === 0) return [{ text, isMatch: false }];
 
     const parts: { text: string; isMatch: boolean }[] = [];
     let lastIndex = 0;
@@ -207,12 +205,15 @@ export default function FuzzySearch() {
   };
 
   return (
-    <div class="fuzzy-search-container">
-      <div class="search-input-wrapper">
+    <div class="fuzzy-search-container relative w-full mb-4">
+      <div class="relative w-full">
         <input
           ref={inputRef}
           type="text"
-          class="search-input"
+          class="w-full px-10 py-2.5 rounded-lg border border-gray-300 dark:border-gray-600
+                 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                 placeholder-gray-500 dark:placeholder-gray-400 transition-all"
           placeholder="Fuzzy search conversations..."
           onInput={handleInput}
           onKeyDown={handleKeyDown}
@@ -222,13 +223,15 @@ export default function FuzzySearch() {
           aria-expanded={isOpen()}
         />
 
-        <span class="search-icon" aria-hidden="true">
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-xl text-gray-500 dark:text-gray-400 pointer-events-none">
           🔍
         </span>
 
         <Show when={searchQuery()}>
           <button
-            class="clear-button"
+            class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center
+                   rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400
+                   hover:text-gray-700 dark:hover:text-gray-200 text-2xl transition-colors"
             onClick={clearSearch}
             aria-label="Clear search"
             type="button"
@@ -239,11 +242,17 @@ export default function FuzzySearch() {
       </div>
 
       <Show when={isOpen()}>
-        <div class="search-results" id="search-results" role="listbox">
+        <div
+          class="absolute top-full left-0 right-0 mt-2 max-h-96 overflow-y-auto
+                 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700
+                 rounded-lg shadow-lg z-50"
+          id="search-results"
+          role="listbox"
+        >
           <Show
             when={results().length > 0}
             fallback={
-              <div class="search-no-results">
+              <div class="px-4 py-8 text-center text-gray-500 dark:text-gray-400">
                 No conversations found for "{searchQuery()}"
               </div>
             }
@@ -251,24 +260,28 @@ export default function FuzzySearch() {
             <For each={results()}>
               {(result, index) => (
                 <div
-                  class="search-result-item"
-                  classList={{ selected: index() === selectedIndex() }}
+                  class={`px-4 py-3 cursor-pointer border-b border-gray-100 dark:border-gray-700 last:border-b-0
+                         transition-colors ${
+                           index() === selectedIndex()
+                             ? 'bg-blue-50 dark:bg-blue-900/20'
+                             : 'hover:bg-gray-50 dark:hover:bg-gray-700/50'
+                         }`}
                   onClick={() => selectResult(result)}
                   role="option"
                   aria-selected={index() === selectedIndex()}
                 >
-                  <div class="result-title">
+                  <div class="font-medium text-gray-900 dark:text-gray-100 mb-1">
                     <For each={highlightMatches(result.conversation.title, result.matches)}>
                       {(part) => (
-                        <span classList={{ highlight: part.isMatch }}>
+                        <span class={part.isMatch ? 'bg-yellow-200 dark:bg-yellow-600 font-semibold px-0.5 rounded' : ''}>
                           {part.text}
                         </span>
                       )}
                     </For>
                   </div>
-                  <div class="result-meta">
-                    <span class="result-source">{result.conversation.source}</span>
-                    <span class="result-score" title="Match score">
+                  <div class="flex justify-between items-center text-sm text-gray-600 dark:text-gray-400">
+                    <span class="capitalize">{result.conversation.source}</span>
+                    <span class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs">
                       {Math.round(result.score * 100)}%
                     </span>
                   </div>
