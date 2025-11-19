@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <!-- Content Security Policy - Fully hardened with no unsafe-inline, Ko-fi widget allowed -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-KH5eBgXGSEI4wD8GOj66xx6eNcmH1w9nvT4MH3kcU4s=' 'sha256-6nVcHmYPlaMvVejmXT+vnk1CK/ep1h/+0x0J9J5NVpo=' 'sha256-CpaY2HWU3sNLC4iAz+ZSeJdg9Z6VuYQ4XtfIO6qdZBg=' https://storage.ko-fi.com/; style-src 'self' 'unsafe-hashes' 'sha256-j06JFiobtwosKwaYHPhyArAg6e7INAo9zH+6rn0Lbzk=' 'sha256-bQfEClC8N/7pEExTVZceMbh+Kb4DroWqFU2ml0tfWo8=' https://fonts.googleapis.com/; img-src 'self' data: https:; connect-src 'self'; font-src 'self' https://fonts.gstatic.com/; worker-src 'self' blob:; frame-src https://storage.ko-fi.com/; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <title>
+    ConvoKeep - Private AI Conversation Archive | Store Claude and ChatGPT
+    Chats
+  </title>
+  <meta name="description"
+    content="ConvoKeep is a privacy-first tool to archive, search, and browse your AI conversations from ChatGPT, Claude, and other LLMs. All data stays in your browser via IndexedDB." />
+
+  <!-- Open Graph / Social Media Tags -->
+  <meta property="og:title" content="ConvoKeep - Private AI Conversation Archive" />
+  <meta property="og:description"
+    content="Store, search, and view your AI conversations locally with privacy-first design. No cloud storage or API keys required." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://convokeepai.com/" />
+  <meta property="og:image" content="./assets/og-image.jpg" />
+
+  <!-- Twitter Card Tags -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="ConvoKeep - Private AI Conversation Archive" />
+  <meta name="twitter:description"
+    content="Store, search, and view your AI conversations locally with privacy-first design." />
+  <meta name="twitter:image" content="./assets/og-image.jpg" />
+
+  <!-- SEO Meta Tags -->
+  <meta name="keywords"
+    content="AI conversation archive, ChatGPT history, Claude chats, LLM conversations, privacy-first, local storage" />
+  <meta name="author" content="ConvoKeep" />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://convokeepai.com/" />
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/icons/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/icons/favicon-16x16.png" />
+  <link rel="manifest" href="./manifest.json" />
+  <!-- <link rel="mask-icon" href="/assets/icons/safari-pinned-tab.svg" color="#7287fd"> -->
+  <meta name="msapplication-TileColor" content="#7287fd" />
+  <meta name="msapplication-TileImage" content="/assets/icons/mstile-144x144.png" />
+  <meta name="msapplication-config" content="./browserconfig.xml" />
+  <meta name="theme-color" content="#7287fd" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+  <!-- Preload Critical Assets -->
+  <link rel="preload" href="css/main.css" as="style" />
+
+  <!-- Modular CSS -->
+  <link rel="stylesheet" href="css/main.css" />
+
+  <!-- Inline script to prevent flash of incorrect theme -->
+  <script>
+    (function () {
+      var userSelectedTheme =
+        localStorage.getItem("theme-user-selected") === "true";
+      var savedTheme = localStorage.getItem("theme");
+      var prefersDark =
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+
+      // Set theme based on user preference or OS setting
+      var theme =
+        userSelectedTheme && savedTheme
+          ? savedTheme
+          : prefersDark
+            ? "dark"
+            : "light";
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+
+  <!-- Async load non-critical JS -->
+  <!-- JSZip library for handling uploads (self-hosted) -->
+  <script src="lib/jszip/jszip.min.js" defer></script>
+  <!-- Markdown-it for rendering markdown (self-hosted) -->
+  <script src="lib/markdown-it/markdown-it.min.js" defer></script>
+  <!-- Highlight.js for code syntax highlighting (self-hosted) -->
+  <link rel="stylesheet" href="lib/catppuccin/catppuccin-latte.css"
+    id="hljs-theme" />
+  <script src="lib/highlight.js/highlight.min.js" defer></script>
+  <script src="js/hljs-theme.js" defer></script>
+</head>
+
+<body>
+  <!-- Skip Navigation Link for Accessibility -->
+  <a href="#main-content" class="skip-to-main-content">Skip to main content</a>
+
+  <div class="viewer-container">
+    <!-- Mobile nav toggle (only visible on mobile) -->
+    <button id="mobile-nav-toggle" class="mobile-nav-toggle" aria-label="Open conversation list">
+      <span class="menu-icon" aria-hidden="true">☰</span>
+    </button>
+
+    <!-- Mobile navigation overlay -->
+    <div id="mobile-nav-overlay" class="mobile-nav-overlay"></div>
+
+    <header class="menu-bar" role="banner">
+      <div class="menu-brand">
+        <h1><a href="/" title="ConvoKeep Home">ConvoKeep</a></h1>
+      </div>
+
+      <div class="search-desktop">
+        <fuzzy-search-bar id="conversation-search" placeholder="Search conversations..." min-score="0.3"
+          max-results="50" debounce-time="300"></fuzzy-search-bar>
+      </div>
+
+      <div class="buy-button">
+        <script type="text/javascript" src="https://storage.ko-fi.com/cdn/widget/Widget_2.js"></script>
+        <script type="text/javascript">
+          kofiwidget2.init("Donate", "#fab387", "A0A71C1NZF");
+          kofiwidget2.draw();
+        </script>
+      </div>
+      <div class="menu-container">
+        <!-- Desktop menu toggle - hidden on mobile -->
+        <button id="menu-toggle" class="menu-toggle desktop-only" aria-expanded="false" aria-label="Toggle menu">
+          <span class="menu-icon" aria-hidden="true">☰</span>
+        </button>
+        <nav id="main-menu" class="main-menu" aria-label="Main navigation">
+          <div class="menu-items">
+            <a href="mailto:chriswahlfeldt@gmail.com?subject=ConvoKeep%20Feedback" class="menu-item"
+              aria-label="Send feedback">
+              <span class="menu-item-icon" aria-hidden="true">💬</span>
+              <span class="menu-item-text">Send Feedback</span>
+            </a>
+            <button id="upload-button" class="menu-item" aria-label="Upload conversations">
+              <span class="menu-item-icon" aria-hidden="true">📁</span>
+              <span class="menu-item-text">Upload Files</span>
+            </button>
+            <button id="export-button" class="menu-item" aria-label="Export all conversations"
+              data-feature="export_conversations" data-feature-mode="disable">
+              <span class="menu-item-icon" aria-hidden="true">💾</span>
+              <span class="menu-item-text">Export Backup</span>
+            </button>
+            <button id="import-button" class="menu-item" aria-label="Import backup file"
+              data-feature="export_conversations" data-feature-mode="disable">
+              <span class="menu-item-icon" aria-hidden="true">📥</span>
+              <span class="menu-item-text">Import Backup</span>
+            </button>
+            <button id="license-menu-button" class="menu-item hidden" aria-label="View license and premium features">
+              <span class="menu-item-icon" aria-hidden="true">🔑</span>
+              <span class="menu-item-text">Premium Features</span>
+            </button>
+            <button id="theme-toggle" class="menu-item" aria-label="Toggle between light and dark theme">
+              <span class="menu-item-icon" id="theme-icon">🌙</span>
+              <span class="menu-item-text">Switch to <span id="theme-label">Dark</span> Mode</span>
+            </button>
+            <button id="menu-reset-db-btn" class="menu-item danger-item" aria-label="Reset database">
+              <span class="menu-item-icon" aria-hidden="true">🗑️</span>
+              <span class="menu-item-text">Reset Database</span>
+            </button>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Header with Search and Navigation -->
+    <div class="viewer-content">
+      <!-- Sidebar with conversation list -->
+      <aside class="conversation-sidebar" role="complementary" aria-label="Conversation list">
+        <!-- Mobile menu dropdown toggle -->
+        <div class="mobile-menu-dropdown">
+          <button id="mobile-menu-dropdown-toggle" class="mobile-menu-dropdown-toggle" aria-expanded="false"
+            aria-label="Toggle menu options">
+            <span class="mobile-menu-dropdown-icon">•••</span>
+            <span class="mobile-menu-dropdown-text">More options</span>
+            <span class="mobile-menu-dropdown-arrow">›</span>
+          </button>
+
+          <!-- Mobile menu grid - only visible when dropdown is open -->
+          <div id="mobile-menu-grid" class="mobile-menu-grid mobile-only">
+            <a href="mailto:chriswahlfeldt@gmail.com?subject=ConvoKeep%20Feedback" class="mobile-menu-item"
+              aria-label="Send feedback">
+              <span class="mobile-menu-icon">💬</span>
+              <span class="mobile-menu-text">Feedback</span>
+            </a>
+            <button id="mobile-upload-button" class="mobile-menu-item" aria-label="Upload conversations">
+              <span class="mobile-menu-icon">📁</span>
+              <span class="mobile-menu-text">Upload</span>
+            </button>
+            <button id="mobile-export-button" class="mobile-menu-item" aria-label="Export all conversations"
+              data-feature="export_conversations" data-feature-mode="disable">
+              <span class="mobile-menu-icon">💾</span>
+              <span class="mobile-menu-text">Export</span>
+            </button>
+            <button id="mobile-import-button" class="mobile-menu-item" aria-label="Import backup file"
+              data-feature="export_conversations" data-feature-mode="disable">
+              <span class="mobile-menu-icon">📥</span>
+              <span class="mobile-menu-text">Import</span>
+            </button>
+            <button id="mobile-license-button" class="mobile-menu-item hidden" aria-label="View license and premium features">
+              <span class="mobile-menu-icon">🔑</span>
+              <span class="mobile-menu-text">Premium</span>
+            </button>
+            <button id="mobile-theme-toggle" class="mobile-menu-item" aria-label="Toggle between light and dark theme">
+              <span class="mobile-menu-icon" id="mobile-theme-icon">🌙</span>
+              <span class="mobile-menu-text">Theme</span>
+            </button>
+            <button id="mobile-reset-db-btn" class="mobile-menu-item mobile-danger-item" aria-label="Reset database">
+              <span class="mobile-menu-icon">🗑️</span>
+              <span class="mobile-menu-text">Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="search-and-filters">
+          <div class="search-container search-mobile">
+            <fuzzy-search-bar id="conversation-search" placeholder="Search conversations..." min-score="0.3"
+              max-results="50" debounce-time="300"></fuzzy-search-bar>
+          </div>
+          <div class="filter-container" role="group" aria-label="Filter controls">
+            <label for="source-filter" class="visually-hidden">Filter by source</label>
+            <select id="source-filter" class="filter-select" aria-label="Filter conversations by source">
+              <option value="all">All Sources</option>
+              <option value="gpt">OpenAI/ChatGPT</option>
+              <option value="claude">Claude/Anthropic</option>
+            </select>
+            <label for="sort-order" class="visually-hidden">Sort order</label>
+            <select id="sort-order" class="filter-select" aria-label="Sort conversations">
+              <option value="newest">Newest First</option>
+              <option value="oldest">Oldest First</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Batch Operations Toolbar -->
+        <div id="batch-toolbar" class="batch-toolbar hidden" role="toolbar" aria-label="Batch operations">
+          <div class="batch-toolbar-header">
+            <label class="batch-select-all-container">
+              <input type="checkbox" id="select-all-checkbox" aria-label="Select all conversations" />
+              <span id="selection-count" class="selection-count">0 selected</span>
+            </label>
+          </div>
+          <div class="batch-toolbar-actions">
+            <button id="batch-delete-btn" class="batch-action-btn batch-action-delete" aria-label="Delete selected"
+              data-feature="batch_operations" data-feature-mode="disable">
+              <span aria-hidden="true">🗑️</span> Delete
+            </button>
+            <button id="batch-archive-btn" class="batch-action-btn" aria-label="Archive selected"
+              data-feature="batch_operations" data-feature-mode="disable">
+              <span aria-hidden="true">📦</span> Archive
+            </button>
+            <button id="batch-star-btn" class="batch-action-btn" aria-label="Star selected"
+              data-feature="enhanced_organization" data-feature-mode="disable">
+              <span aria-hidden="true">⭐</span> Star
+            </button>
+            <button id="batch-tag-btn" class="batch-action-btn" aria-label="Tag selected"
+              data-feature="enhanced_organization" data-feature-mode="disable">
+              <span aria-hidden="true">🏷️</span> Tag
+            </button>
+            <button id="batch-export-btn" class="batch-action-btn" aria-label="Export selected"
+              data-feature="export_conversations" data-feature-mode="disable">
+              <span aria-hidden="true">📤</span> Export
+            </button>
+          </div>
+        </div>
+
+        <!-- Organization Filters -->
+        <div id="organization-filters" class="organization-filters" role="group" aria-label="Organization filters">
+          <button id="filter-starred" class="filter-chip" aria-label="Show only starred" data-active="false">
+            <span aria-hidden="true">⭐</span> Starred
+          </button>
+          <button id="filter-archived" class="filter-chip" aria-label="Show archived" data-active="false">
+            <span aria-hidden="true">📦</span> Archived
+          </button>
+          <button id="filter-tags-btn" class="filter-chip" aria-label="Filter by tags" data-active="false"
+            data-feature="enhanced_organization" data-feature-mode="disable">
+            <span aria-hidden="true">🏷️</span> Tags <span class="filter-chip-arrow">▼</span>
+          </button>
+          <button id="manage-tags-btn" class="filter-chip filter-chip-action" aria-label="Manage tags"
+            data-feature="enhanced_organization" data-feature-mode="disable">
+            <span aria-hidden="true">⚙️</span> Manage Tags
+          </button>
+        </div>
+
+        <div id="conversation-list" class="conversation-list" role="list" aria-label="Conversations">
+          <!-- Conversation list items will be generated here -->
+          <div id="empty-conversation-list" class="empty-conversation-list" aria-live="polite">
+            <p>No conversations found</p>
+            <button id="sidebar-upload-btn" class="button">
+              Upload Files
+            </button>
+          </div>
+        </div>
+        <!-- Pagination container -->
+        <div id="pagination-container" class="pagination-container" aria-label="Pagination controls"></div>
+      </aside>
+
+      <!-- Main content area for displaying the selected conversation -->
+      <main id="main-content" class="chat-container" role="main">
+        <div id="empty-state" class="empty-state" aria-live="polite">
+          <!-- Content will be dynamically generated by JavaScript -->
+        </div>
+        <article id="conversation-view" class="conversation-view hidden" aria-labelledby="conversation-title">
+          <header class="conversation-header conversation-header-desktop">
+            <h2 id="conversation-title">Conversation Title</h2>
+            <div class="conversation-meta" aria-label="Conversation details">
+              <time id="conversation-date" datetime="">Date</time>
+              <span id="conversation-model">Model</span>
+            </div>
+          </header>
+
+          <div id="message-container" class="message-container" role="log" aria-live="polite"
+            aria-label="Conversation messages">
+            <!-- Messages will be generated here -->
+            <div id="message-scroll-loader" class="scroll-loader" aria-hidden="true">
+              <div class="loading-spinner"></div>
+              <span>Summoning more digital wisdom...</span>
+            </div>
+          </div>
+        </article>
+      </main>
+    </div>
+  </div>
+
+  <!-- Modal uploader that appears when the upload button is clicked -->
+  <div id="upload-modal" class="upload-modal" role="dialog" aria-labelledby="upload-modal-title" aria-modal="true"
+    hidden>
+    <div class="upload-modal-content">
+      <button class="close-modal" aria-label="Close upload modal">
+        &times;
+      </button>
+      <div class="upload-section">
+        <h2 id="upload-modal-title">Upload Conversations</h2>
+        <div id="drop-area" class="drop-area" role="region" aria-description="File upload area">
+          <p>Drag and drop your .zip or .dms file here</p>
+          <p>or</p>
+          <input type="file" id="file-input" accept=".zip,.dms" aria-label="Choose file to upload" />
+          <label for="file-input" class="file-input-label">Choose File</label>
+          <!-- Hidden file input for importing backups -->
+          <input type="file" id="import-file-input" accept=".json" style="display: none;" aria-label="Choose backup file to import" />
+        </div>
+        <div id="upload-status" class="upload-status" role="status" aria-live="polite"></div>
+        <div id="progress-container" class="progress-container hidden" role="progressbar"
+          aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+          <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div class="worker-status" id="worker-status" aria-live="polite"></div>
+        <div class="action-buttons modal-actions">
+          <button id="reset-db-btn" class="button" aria-label="Reset database">
+            Reset Database
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tag Management Modal -->
+  <div id="tag-management-modal" class="modal" role="dialog" aria-labelledby="tag-management-title" aria-modal="true" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="tag-management-title">Manage Tags</h2>
+        <button class="close-modal" aria-label="Close tag management modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="tag-management-list">
+          <div id="tags-list" class="tags-list">
+            <!-- Tags will be populated here -->
+            <p class="empty-state-small">No tags yet. Add tags to conversations to see them here.</p>
+          </div>
+        </div>
+        <div class="tag-management-actions">
+          <button id="close-tag-management" class="button button-secondary">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Batch Tag Modal -->
+  <div id="batch-tag-modal" class="modal" role="dialog" aria-labelledby="batch-tag-title" aria-modal="true" hidden>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="batch-tag-title">Tag <span id="batch-tag-count">0</span> Conversations</h2>
+        <button class="close-modal" aria-label="Close batch tag modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="batch-tag-input-group">
+          <label for="batch-tag-input">Add tags (comma-separated or press Enter):</label>
+          <input type="text" id="batch-tag-input" class="tag-input" placeholder="e.g., work, important, research" />
+          <div id="batch-tag-suggestions" class="tag-suggestions"></div>
+        </div>
+        <div class="selected-tags" id="selected-tags">
+          <!-- Selected tags will appear here as chips -->
+        </div>
+        <div class="batch-tag-actions">
+          <button id="batch-tag-add" class="button button-primary">Add Tags</button>
+          <button id="batch-tag-remove" class="button button-danger">Remove Tags</button>
+          <button id="batch-tag-cancel" class="button button-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tag Filter Dropdown -->
+  <div id="tag-filter-dropdown" class="tag-filter-dropdown hidden" role="menu" aria-label="Filter by tags">
+    <div class="tag-filter-header">
+      <input type="text" id="tag-filter-search" class="tag-filter-search" placeholder="Search tags..." />
+    </div>
+    <div id="tag-filter-list" class="tag-filter-list">
+      <!-- Tag checkboxes will be populated here -->
+      <p class="empty-state-small">No tags available</p>
+    </div>
+    <div class="tag-filter-actions">
+      <button id="tag-filter-apply" class="button button-primary button-small">Apply</button>
+      <button id="tag-filter-clear" class="button button-secondary button-small">Clear</button>
+    </div>
+  </div>
+
+  <!-- Structured Data for SEO -->
+  <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "ConvoKeep",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "description": "A privacy-focused web application for archiving, viewing, and searching AI conversations from ChatGPT, Claude, and other large language models.",
+        "featureList": [
+          "Privacy-First Design - All data stays in your browser via IndexedDB",
+          "Multiple Source Support - Compatible with ChatGPT and Claude exports",
+          "Rich Search - Search conversation titles and content",
+          "Markdown Rendering with syntax highlighting"
+        ]
+      }
+    </script>
+
+  <!-- Theme script -->
+  <script src="js/theme.js" defer></script>
+
+  <!-- Menu toggle handler -->
+  <script src="js/menu.js" defer></script>
+
+  <!-- Main scripts -->
+  <script type="module" src="js/index.js"></script>
+
+  <!-- Service Worker Registration -->
+  <script src="js/sw-register.js" defer></script>
+</body>
+
+</html>

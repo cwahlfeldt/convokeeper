@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ConvoKeep Test Suite</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+      padding: 20px;
+      background: #1e1e2e;
+      color: #cdd6f4;
+      line-height: 1.6;
+    }
+
+    .header {
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #45475a;
+    }
+
+    h1 {
+      color: #b4befe;
+      margin-bottom: 10px;
+      font-size: 2em;
+    }
+
+    .subtitle {
+      color: #a6adc8;
+      font-size: 0.9em;
+    }
+
+    .controls {
+      margin-bottom: 20px;
+      padding: 15px;
+      background: #313244;
+      border-radius: 8px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    button {
+      background: #89b4fa;
+      color: #1e1e2e;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #b4befe;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    #output {
+      white-space: pre-wrap;
+      background: #181825;
+      padding: 20px;
+      border-radius: 8px;
+      border: 1px solid #45475a;
+      font-size: 14px;
+      min-height: 400px;
+      overflow-x: auto;
+    }
+
+    .summary {
+      margin-top: 20px;
+      padding: 15px;
+      background: #313244;
+      border-radius: 8px;
+      border-left: 4px solid #89b4fa;
+    }
+
+    .summary.success {
+      border-left-color: #a6e3a1;
+      background: #1e2e1e;
+    }
+
+    .summary.failure {
+      border-left-color: #f38ba8;
+      background: #2e1e1e;
+    }
+
+    .pass { color: #a6e3a1; }
+    .fail { color: #f38ba8; }
+    .skip { color: #a6adc8; }
+    .suite { color: #b4befe; font-weight: bold; }
+    .separator { color: #45475a; }
+    .emoji { font-style: normal; }
+
+    .loading {
+      display: inline-block;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .progress {
+      margin: 10px 0;
+      font-size: 0.9em;
+      color: #a6adc8;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🧪 ConvoKeep Test Suite</h1>
+    <div class="subtitle">Vanilla JavaScript Testing Framework</div>
+  </div>
+
+  <div class="controls">
+    <button id="run-all">Run All Tests</button>
+    <button id="clear-output">Clear Output</button>
+    <div class="progress" id="progress"></div>
+  </div>
+
+  <div id="summary" class="summary hidden"></div>
+
+  <div id="output">Click "Run All Tests" to begin...</div>
+
+  <script type="module">
+    // Capture console output and display in the UI
+    const output = document.getElementById('output');
+    const summaryDiv = document.getElementById('summary');
+    const progressDiv = document.getElementById('progress');
+    const originalLog = console.log;
+    const originalError = console.error;
+
+    let outputBuffer = '';
+
+    console.log = (...args) => {
+      const message = args.join(' ');
+      outputBuffer += message + '\n';
+      output.textContent = outputBuffer;
+      originalLog(...args);
+
+      // Auto-scroll to bottom
+      output.scrollTop = output.scrollHeight;
+    };
+
+    console.error = (...args) => {
+      const message = args.join(' ');
+      outputBuffer += message + '\n';
+      output.innerHTML += `<span class="fail">${escapeHtml(message)}</span>\n`;
+      originalError(...args);
+
+      // Auto-scroll to bottom
+      output.scrollTop = output.scrollHeight;
+    };
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Import all test suites
+    const testSuites = [
+      // Utility tests
+      { path: './utils/formatUtils.test.js', name: 'formatUtils' },
+      { path: './utils/textUtils.test.js', name: 'textUtils' },
+      { path: './utils/idUtils.test.js', name: 'idUtils' },
+
+      // Schema converter tests
+      { path: './schemaConverter/formatDetector.test.js', name: 'formatDetector' },
+      { path: './schemaConverter/baseConverter.test.js', name: 'baseConverter' },
+
+      // Database tests (batch operations & organization)
+      { path: './database/batchOperations.test.js', name: 'batchOperations' },
+
+      // Integration tests
+      { path: './integration/schemaConversion.test.js', name: 'schemaConversion' },
+    ];
+
+    async function loadTestSuites() {
+      const suites = [];
+
+      for (const { path, name } of testSuites) {
+        try {
+          const module = await import(path);
+          suites.push(module.default);
+        } catch (error) {
+          console.error(`Failed to load test suite: ${name}`);
+          console.error(`  Error: ${error.message}`);
+        }
+      }
+
+      return suites;
+    }
+
+    async function runAllTests() {
+      outputBuffer = '';
+      output.textContent = '';
+      summaryDiv.classList.add('hidden');
+      progressDiv.innerHTML = '<span class="loading">Running tests...</span>';
+
+      const startTime = performance.now();
+      const suites = await loadTestSuites();
+
+      let totalPassed = 0;
+      let totalFailed = 0;
+      let totalSkipped = 0;
+      let totalTests = 0;
+
+      for (let i = 0; i < suites.length; i++) {
+        const suite = suites[i];
+        progressDiv.textContent = `Running suite ${i + 1}/${suites.length}...`;
+
+        try {
+          const results = await suite.run();
+          totalPassed += results.passed;
+          totalFailed += results.failed;
+          totalSkipped += results.skipped || 0;
+          totalTests += results.passed + results.failed + (results.skipped || 0);
+        } catch (error) {
+          console.error(`Suite failed with error: ${error.message}`);
+        }
+      }
+
+      const endTime = performance.now();
+      const duration = ((endTime - startTime) / 1000).toFixed(2);
+
+      // Display summary
+      console.log('\n' + '='.repeat(60));
+      console.log('📊 OVERALL TEST RESULTS');
+      console.log('='.repeat(60));
+      console.log(`Total Tests: ${totalTests}`);
+      console.log(`Passed: ${totalPassed}`);
+      console.log(`Failed: ${totalFailed}`);
+      console.log(`Skipped: ${totalSkipped}`);
+      console.log(`Duration: ${duration}s`);
+      console.log('='.repeat(60));
+
+      // Update summary UI
+      summaryDiv.classList.remove('hidden');
+      summaryDiv.className = 'summary ' + (totalFailed === 0 ? 'success' : 'failure');
+      summaryDiv.innerHTML = `
+        <strong>${totalFailed === 0 ? '✨ All tests passed!' : '❌ Some tests failed'}</strong><br>
+        ${totalPassed}/${totalTests} tests passed in ${duration}s
+      `;
+
+      progressDiv.textContent = `Completed ${suites.length} test suites`;
+
+      if (totalFailed === 0 && totalPassed > 0) {
+        console.log('✨ All tests passed!');
+      } else if (totalFailed > 0) {
+        console.log('💥 Some tests failed. See details above.');
+      }
+    }
+
+    // Event listeners
+    document.getElementById('run-all').addEventListener('click', runAllTests);
+
+    document.getElementById('clear-output').addEventListener('click', () => {
+      outputBuffer = '';
+      output.textContent = 'Output cleared. Click "Run All Tests" to begin...';
+      summaryDiv.classList.add('hidden');
+      progressDiv.textContent = '';
+    });
+
+    // Auto-run tests on load (optional)
+    // Uncomment the next line to automatically run tests when the page loads
+    // runAllTests();
+  </script>
+</body>
+</html>

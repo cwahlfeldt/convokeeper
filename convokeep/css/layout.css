@@ -1,0 +1,303 @@
+/* 
+ * ConvoKeep - Layout Styles
+ * App structure, containers, and layout elements
+ */
+
+/* Main Container */
+.viewer-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Header Bar */
+.menu-bar {
+  display: flex;
+  align-items: center;
+  padding: var(--space-md) var(--space-md);
+  background-color: var(--color-bg);
+  border-bottom: 1px solid var(--color-border);
+  gap: 1rem;
+}
+
+.menu-brand {
+  font-weight: 800;
+  font-stretch: 85%;
+  letter-spacing: -0.9px;
+}
+
+.menu-brand h1 {
+  font-size: 2.1rem;
+  margin: 0;
+  line-height: 1;
+}
+
+/* Main Content Area */
+.viewer-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: calc(100% - 50px);
+}
+
+/* Sidebar */
+.conversation-sidebar {
+  width: var(--sidebar-width);
+  background-color: var(--color-bg);
+  border-right: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.conversation-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Pagination container in sidebar */
+.pagination-container {
+  padding: var(--space-sm);
+  background-color: var(--color-bg);
+  border-top: 1px solid var(--color-border);
+}
+
+/* Chat Container */
+.chat-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-container #empty-state {
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+/* Conversation Header */
+.conversation-header {
+  padding: var(--space-md) var(--space-md);
+  padding-bottom: 0.8rem;
+  position: static;
+  border-bottom: 1px solid var(--color-border);
+}
+
+#conversation-title {
+  margin-top: 0;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.conversation-meta {
+  display: flex;
+  gap: var(--space-md);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-muted);
+}
+
+/* Conversation View */
+.conversation-view {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.message-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  padding: var(--space-lg);
+  padding-bottom: 3rem;
+  overflow-y: auto;
+  height: 100%;
+  background-color: var(--color-bg-alt);
+}
+
+/* Search and Filters */
+.search-and-filters {
+  border-bottom: solid 1px var(--color-border);
+}
+
+.search-container {
+  padding: var(--space-sm) var(--space-md) 0 var(--space-md);
+}
+
+.filter-container {
+  display: flex;
+  gap: var(--space-sm);
+  padding: 0.75rem var(--space-md);
+}
+
+.search-desktop {
+  width: 100%;
+}
+
+.search-mobile {
+  display: none;
+}
+
+/* Empty States */
+.empty-list-message {
+  padding: var(--space-md);
+  text-align: center;
+  color: var(--color-text-muted);
+  margin-top: var(--space-lg);
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+}
+
+.empty-conversation-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-xl);
+  text-align: center;
+  height: 200px;
+}
+
+.empty-conversation-list p {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-md);
+  font-size: var(--font-size-sm);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  color: var(--color-accent);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.empty-state-container {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.empty-state-icon {
+  font-size: 3.5rem;
+  color: var(--color-accent);
+  opacity: 0.8;
+  line-height: 1.3;
+}
+
+.empty-state-title {
+  margin-bottom: 1rem;
+}
+
+.empty-state-description {
+  color: var(--color-text-muted);
+  max-width: 550px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Features section in empty state */
+.feature-container {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+}
+
+.feature-item {
+  text-align: center;
+  width: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.feature-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  color: var(--color-accent);
+}
+
+.feature-title {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.feature-description {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Getting started section */
+.getting-started {
+  background-color: var(--color-bg-dim);
+  padding: var(--space-md);
+  margin: var(--space-md) 0;
+  text-align: left;
+  border-left: 4px solid var(--color-accent);
+}
+
+.getting-started-title {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+}
+
+.getting-started-list {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: var(--color-text-muted);
+}
+
+.getting-started-item {
+  margin-bottom: 0.75rem;
+}
+
+.formats-note {
+  margin-top: 1.5rem;
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  padding: 0.5rem 1rem;
+  background-color: var(--color-bg-dim);
+  border-radius: 4px;
+  display: inline-block;
+}
+
+/* Empty state customizations */
+.empty-state h2 {
+  margin-bottom: var(--space-md);
+  color: var(--color-accent);
+}
+
+.empty-state p {
+  color: var(--color-text-muted);
+  max-width: 500px;
+  margin-bottom: 0;
+}
+
+#empty-state-upload-btn {
+  padding: 0.5rem 2rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.empty-state .button {
+  padding: var(--space-sm) var(--space-xl);
+  font-size: var(--font-size-md);
+  margin-top: var(--space-lg);
+}
+
+/* Smooth scrolling */
+.conversation-list,
+.message-container {
+  scroll-behavior: smooth;
+}

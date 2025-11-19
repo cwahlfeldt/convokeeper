@@ -1,0 +1,224 @@
+/* 
+ * ConvoKeep - Base Styles
+ * Resets, typography, and base element styling
+ */
+
+/* Global Box Sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+/* Base Typography & Layout */
+html,
+body {
+  height: 100%;
+  font-family: var(--font-family);
+  color: var(--color-text);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-color: var(--color-bg);
+  overflow: hidden;
+}
+
+/* Links */
+a {
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-accent-hover);
+}
+
+/* Buttons & Inputs */
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  border: none;
+  background: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* Headings */
+h1,
+h2,
+h3 {
+  font-weight: 700;
+  font-stretch: 75%;
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-md);
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+h1 {
+  font-size: 2rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+/* Paragraphs */
+p {
+  margin-bottom: var(--space-md);
+  text-wrap: pretty;
+  overflow-wrap: break-word;
+  line-height: 1.6;
+}
+
+/* Lists */
+ul,
+ol {
+  margin-bottom: 0.75rem;
+  margin-top: 0.5rem;
+  padding-left: 1.5em;
+}
+
+li {
+  margin-bottom: var(--space-xs);
+}
+
+li > p {
+  margin-bottom: 0.7em;
+}
+
+/* Code Blocks */
+pre {
+  margin: 1.5em 0;
+  padding: 1em;
+  background: #222;
+  color: #f8f8f2;
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+code {
+  padding: 2px 4px;
+  background: #eee;
+  border-radius: 4px;
+}
+
+/* Basic Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-family);
+  font-size: var(--font-size-md);
+  color: var(--color-text);
+  background-color: var(--color-bg);
+  margin: var(--space-lg) 0;
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-md);
+  overflow: hidden; /* Ensures the border-radius works correctly */
+}
+
+/* Header Styles */
+thead {
+  background-color: var(--color-bg-alt);
+}
+
+th {
+  padding: var(--space-md) var(--space-lg);
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid var(--color-border);
+}
+
+/* Row Styles */
+td {
+  padding: var(--space-md) var(--space-lg);
+  border-bottom: 1px solid var(--color-border);
+}
+
+/* Alternating Row Colors */
+tbody tr:nth-child(even) {
+  background-color: var(--color-bg-dim);
+}
+
+/* Hover State */
+tbody tr:hover {
+  background-color: var(--color-accent-hover);
+  transition: background-color var(--transition);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  table {
+    width: 100%;
+    display: block;
+    overflow-x: auto;
+  }
+
+  th,
+  td {
+    padding: var(--space-sm) var(--space-md);
+    font-size: var(--font-size-sm);
+  }
+}
+
+/* Root Isolation */
+#root {
+  isolation: isolate;
+}
+
+/* Animations */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes highlightFocus {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes flash-highlight {
+  0% {
+    background-color: rgba(114, 135, 253, 0.2);
+  }
+
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes progress-animation {
+  0% {
+    background-position: 0 0;
+  }
+
+  100% {
+    background-position: 20px 0;
+  }
+}

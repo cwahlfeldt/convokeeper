@@ -1,0 +1,134 @@
+/* 
+ * ConvoKeep - Variables and Theming
+ * Design tokens, theme values, and CSS custom properties
+ */
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("../../assets/fonts/OpenSans-VariableFont_wdth,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Open Sans";
+  src: url("../../assets/fonts/OpenSans-Italic-VariableFont_wdth,wght.ttf") format("truetype");
+  font-weight: 100 900;
+  font-style: italic;
+}
+
+/* ===== Base Variables ===== */
+:root {
+  /* Spacing */
+  --space-xs: 0.3rem;
+  --space-sm: 0.6rem;
+  --space-md: 0.8rem;
+  --space-lg: 1.2rem;
+  --space-xl: 2rem;
+
+  /* Typography */
+  --font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Oxygen, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+
+  /* Borders */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-round: 50%;
+
+  /* Effects */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+  --transition: 0.2s ease;
+
+  /* Layout */
+  --sidebar-width: 360px;
+  --header-height: 60px;
+  --message-spacing: var(--space-lg);
+
+  /* Z-indices */
+  --z-modal: 500;
+
+  /* UI Settings */
+  --message-max-width: 90%;
+  --message-min-width: 420px;
+}
+
+/* ===== Theme: Light ===== */
+:root,
+:root[data-theme="light"] {
+  /* Catppuccin Latte colors */
+  --ctp-rosewater: #dc8a78;
+  --ctp-flamingo: #dd7878;
+  --ctp-red: #d20f39;
+  --ctp-peach: #fe640b;
+  --ctp-yellow: #df8e1d;
+  --ctp-green: #40a02b;
+  --ctp-blue: #1e66f5;
+  --ctp-lavender: #7287fd;
+  --ctp-text: #4c4f69;
+  --ctp-subtext1: #5c5f77;
+  --ctp-subtext0: #6c6f85;
+  --ctp-surface0: #ccd0da;
+  --ctp-surface1: #eef0f4;
+  --ctp-base: #eff1f5;
+  --ctp-mantle: #e6e9ef;
+  --ctp-crust: #dce0e8;
+  --ctp-black: #11111b;
+
+  --user-bubble-bg: var(--ctp-lavender);
+  --user-bubble-text: var(--ctp-base);
+}
+
+/* ===== Theme: Dark ===== */
+:root[data-theme="dark"] {
+  /* Catppuccin Mocha colors */
+  --ctp-rosewater: #f5e0dc;
+  --ctp-flamingo: #f2cdcd;
+  --ctp-red: #f38ba8;
+  --ctp-peach: #fab387;
+  --ctp-yellow: #f9e2af;
+  --ctp-green: #a6e3a1;
+  --ctp-blue: #89b4fa;
+  --ctp-lavender: #b4befe;
+  --ctp-text: #cdd6f4;
+  --ctp-subtext1: #bac2de;
+  --ctp-subtext0: #a6adc8;
+  --ctp-surface0: #313244;
+  --ctp-surface1: #313244;
+  --ctp-base: #1e1e2e;
+  --ctp-mantle: #181825;
+  --ctp-crust: #11111b;
+  --ctp-black: #11111b;
+
+  --user-bubble-bg: var(--ctp-green);
+  --user-bubble-text: var(--ctp-mantle);
+}
+
+/* Mapped colors - used across both themes */
+:root {
+  /* Mapped colors */
+  --color-bg: var(--ctp-base);
+  --color-bg-alt: var(--ctp-mantle);
+  --color-bg-dim: var(--ctp-crust);
+  --color-border: var(--ctp-surface0);
+  --color-text: var(--ctp-text);
+  --color-text-muted: var(--ctp-subtext1);
+  --color-accent: var(--ctp-lavender);
+  --color-accent-hover: var(--ctp-subtext0);
+  --color-code-bg: var(--ctp-mantle);
+  --color-code-text: var(--ctp-text);
+
+  /* Message bubbles */
+  --assistant-bubble-bg: var(--ctp-surface1);
+  --assistant-bubble-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  --color-meta-text: var(--ctp-base);
+  --color-meta-accent: var(--ctp-crust);
+}

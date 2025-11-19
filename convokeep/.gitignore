@@ -1,0 +1,7 @@
+_tmp
+.old
+
+# no node in git and prod. only used for testing locally
+node_modules
+package-lock.json
+package.json

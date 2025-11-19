@@ -1,0 +1,28 @@
+/* 
+ * ConvoKeep - Modular CSS
+ * A modular, well-organized stylesheet for better maintainability
+ */
+
+/* Variables and theme styles */
+@import 'variables.css';
+
+/* Base styles, resets, and typography */
+@import 'base.css';
+
+/* Layout structures */
+@import 'layout.css';
+
+/* UI Components */
+@import 'components.css';
+
+/* Message-specific styling */
+@import 'messages.css';
+
+/* Utility and helper classes */
+@import 'utilities.css';
+
+/* Responsive styles */
+@import 'responsive.css';
+
+/* The mobile menu already exists as a separate file */
+@import 'mobile-menu.css';

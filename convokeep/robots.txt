@@ -1,0 +1,6 @@
+# robots.txt for ConvoKeep
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://convokeepai.com/sitemap.xml

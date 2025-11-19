@@ -1,0 +1,65 @@
+/* 
+ * ConvoKeep - Utility Classes
+ * Helper classes, accessibility helpers, and small utility styles
+ */
+
+/* Accessibility Helpers */
+.visually-hidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+.skip-to-main-content {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-accent);
+  color: white;
+  padding: 8px;
+  z-index: 100;
+  transition: top 0.2s;
+}
+
+.skip-to-main-content:focus {
+  top: 0;
+}
+
+/* Utility for hidden elements */
+.hidden {
+  display: none !important;
+}
+
+/* Utility for block display */
+.block {
+  display: block !important;
+}
+
+/* Color utilities */
+.text-green {
+  color: var(--ctp-green);
+}
+
+.text-yellow {
+  color: var(--ctp-yellow);
+}
+
+/* Mobile/Desktop visibility */
+.mobile-only {
+  display: none;
+}
+
+.desktop-only {
+  display: block;
+}
+
+/* Feedback link */
+.feedback-link {
+  font-size: 0.8rem;
+}
