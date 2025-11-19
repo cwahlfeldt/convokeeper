@@ -42,17 +42,23 @@
   
   /* Pagination adjustments for tablet */
   .pagination-container {
-    padding: var(--space-xs) var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
   }
-  
+
   .pagination-pages {
     gap: 4px;
   }
-  
+
   .pagination-button {
-    min-width: 32px;
-    padding: 5px;
-    font-size: 13px;
+    min-width: 34px;
+    height: 34px;
+    padding: 6px 10px;
+    font-size: var(--font-size-sm);
+  }
+
+  .pagination-prev,
+  .pagination-next {
+    min-width: 40px;
   }
   
   /* Show mobile search */
@@ -199,21 +205,33 @@
   
   /* Make pagination more compact on mobile */
   .pagination-container {
-    padding: 4px;
+    padding: var(--space-xs) var(--space-sm);
   }
-  
+
   .pagination-pages {
-    gap: 2px;
+    gap: 3px;
   }
-  
+
   .pagination-button {
-    min-width: 28px;
-    padding: 3px;
-    font-size: 12px;
+    min-width: 32px;
+    height: 32px;
+    padding: 4px 8px;
+    font-size: 0.8rem;
   }
-  
+
+  .pagination-prev,
+  .pagination-next {
+    min-width: 36px;
+    font-size: 0.9rem;
+  }
+
   .pagination-info {
-    font-size: 11px;
+    font-size: 0.7rem;
+    gap: 4px;
+  }
+
+  .pagination-total {
+    display: none;
   }
   
   /* Reduce margins and padding for better space usage */

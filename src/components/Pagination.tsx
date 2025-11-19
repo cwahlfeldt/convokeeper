@@ -75,70 +75,80 @@ export default function Pagination() {
 
   return (
     <Show when={pagination.totalPages > 1}>
-      <div class="pagination" role="navigation" aria-label="Pagination">
-        <div class="pagination-info">
-          Page {pagination.currentPage} of {pagination.totalPages}
-          {pagination.totalConversations > 0 && (
-            <span class="pagination-total">
-              ({pagination.totalConversations} total)
+      <div class="pagination-container">
+        <div class="pagination" role="navigation" aria-label="Pagination">
+          <div class="pagination-controls">
+            <button
+              class="pagination-button pagination-prev"
+              onClick={goToFirst}
+              disabled={pagination.currentPage === 1}
+              aria-label="Go to first page"
+              title="First page"
+            >
+              ««
+            </button>
+
+            <button
+              class="pagination-button pagination-prev"
+              onClick={goToPrevious}
+              disabled={pagination.currentPage === 1}
+              aria-label="Go to previous page"
+              title="Previous page"
+            >
+              «
+            </button>
+
+            <div class="pagination-pages">
+              {getPageNumbers().map((page) => (
+                <>
+                  {typeof page === 'number' ? (
+                    <button
+                      class="pagination-button"
+                      classList={{ active: page === pagination.currentPage }}
+                      onClick={() => goToPage(page)}
+                      aria-label={`Go to page ${page}`}
+                      aria-current={page === pagination.currentPage ? 'page' : undefined}
+                    >
+                      {page}
+                    </button>
+                  ) : (
+                    <span class="pagination-ellipsis">{page}</span>
+                  )}
+                </>
+              ))}
+            </div>
+
+            <button
+              class="pagination-button pagination-next"
+              onClick={goToNext}
+              disabled={pagination.currentPage === pagination.totalPages}
+              aria-label="Go to next page"
+              title="Next page"
+            >
+              »
+            </button>
+
+            <button
+              class="pagination-button pagination-next"
+              onClick={goToLast}
+              disabled={pagination.currentPage === pagination.totalPages}
+              aria-label="Go to last page"
+              title="Last page"
+            >
+              »»
+            </button>
+          </div>
+
+          <div class="pagination-info">
+            <span class="pagination-current">
+              Page {pagination.currentPage} of {pagination.totalPages}
             </span>
-          )}
-        </div>
-
-        <div class="pagination-controls">
-          <button
-            class="pagination-btn"
-            onClick={goToFirst}
-            disabled={pagination.currentPage === 1}
-            aria-label="Go to first page"
-          >
-            ««
-          </button>
-
-          <button
-            class="pagination-btn"
-            onClick={goToPrevious}
-            disabled={pagination.currentPage === 1}
-            aria-label="Go to previous page"
-          >
-            «
-          </button>
-
-          {getPageNumbers().map((page) => (
-            <>
-              {typeof page === 'number' ? (
-                <button
-                  class="pagination-btn"
-                  classList={{ active: page === pagination.currentPage }}
-                  onClick={() => goToPage(page)}
-                  aria-label={`Go to page ${page}`}
-                  aria-current={page === pagination.currentPage ? 'page' : undefined}
-                >
-                  {page}
-                </button>
-              ) : (
-                <span class="pagination-ellipsis">{page}</span>
-              )}
-            </>
-          ))}
-
-          <button
-            class="pagination-btn"
-            onClick={goToNext}
-            disabled={pagination.currentPage === pagination.totalPages}
-            aria-label="Go to next page"
-          >
-            »
-          </button>
-
-          <button
-            class="pagination-btn"
-            onClick={goToLast}
-            disabled={pagination.currentPage === pagination.totalPages}
-            aria-label="Go to last page"
-          >
-            »»
-          </button>
+            {pagination.totalConversations > 0 && (
+              <span class="pagination-total">
+                • {pagination.totalConversations} conversation{pagination.totalConversations !== 1 ? 's' : ''}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </Show>
