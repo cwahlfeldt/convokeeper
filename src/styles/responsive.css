@@ -1,0 +1,237 @@
+/* 
+ * ConvoKeep - Responsive Styles
+ * Media queries and responsive adaptations
+ */
+
+/* Tablet and smaller desktops */
+@media (max-width: 768px) {
+  /* Base layout adjustments */
+  .message {
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .message-bubble {
+    min-width: 0;
+    width: 100%;
+    padding: var(--space-md);
+  }
+
+  .conversation-sidebar {
+    width: 260px;
+  }
+
+  .menu-bar {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .menu-brand h1 {
+    font-size: 1.69rem;
+  }
+  
+  /* Filter container */
+  .filter-container {
+    padding: var(--space-sm) var(--space-sm);
+  }
+  
+  /* Conversation item */
+  .conversation-item {
+    padding: var(--space-md) var(--space-sm);
+  }
+  
+  /* Pagination adjustments for tablet */
+  .pagination-container {
+    padding: var(--space-xs) var(--space-sm);
+  }
+  
+  .pagination-pages {
+    gap: 4px;
+  }
+  
+  .pagination-button {
+    min-width: 32px;
+    padding: 5px;
+    font-size: 13px;
+  }
+  
+  /* Show mobile search */
+  .search-mobile {
+    display: inline-block;
+    width: 100%;
+    padding: var(--space-sm);
+    padding-bottom: 0.15rem;
+  }
+  
+  /* Hide desktop search */
+  .search-desktop {
+    display: none;
+  }
+  
+  /* Mobile Menu */
+  .mobile-only {
+    display: block;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  /* Show mobile nav toggle */
+  .mobile-nav-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Ensure the menu toggle in the header is still accessible */
+  .menu-bar {
+    padding-right: 54px;
+    /* Make room for the mobile nav toggle */
+    justify-content: space-between;
+  }
+
+  /* Adjust the menu spacing */
+  .menu-container {
+    position: relative;
+    z-index: 201;
+    /* Ensure it's above the mobile nav toggle */
+  }
+
+  /* Hide the original menu toggle */
+  .menu-container {
+    display: none;
+  }
+
+  /* Keep donate button visible */
+  .buy-button {
+    margin-right: 0.75rem;
+  }
+
+  /* Mobile dropdown is visible but grid is hidden by default */
+  .mobile-menu-dropdown {
+    display: block;
+  }
+
+  .mobile-menu-dropdown-toggle {
+    display: flex;
+  }
+
+  .mobile-menu-dropdown-arrow {
+    display: block;
+  }
+
+  .mobile-menu-grid {
+    display: grid;
+    /* Grid layout is set but hidden by max-height */
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  /* Adjust sidebar for mobile - slide from right */
+  .conversation-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 85%;
+    max-width: 350px;
+    z-index: 180;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    box-shadow: var(--shadow-lg);
+    border-left: 1px solid var(--color-border);
+    border-right: none;
+    pointer-events: none;
+  }
+
+  /* Handle the open state of the sidebar */
+  body.mobile-nav-open .conversation-sidebar {
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  /* Prevent body scrolling when mobile nav is open */
+  body.mobile-nav-open {
+    overflow: hidden;
+  }
+
+  /* Ensure main chat container takes full width */
+  .chat-container {
+    width: 100%;
+  }
+  
+  /* Adjust mobile toggle for smaller screens */
+  .mobile-nav-toggle {
+    top: 8px;
+    right: 8px;
+    width: 38px;
+    height: 34px;
+    padding: 7px 8px;
+  }
+
+  /* Add padding to accommodate the toggle button */
+  .conversation-header {
+    padding-right: 60px;
+    padding: var(--space-sm) var(--space-md);
+  }
+
+  #conversation-title {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  /* Smaller margins between messages */
+  .message-container {
+    gap: var(--space-md);
+    padding: var(--space-md);
+  }
+  
+  /* Adjust empty state for mobile */
+  .empty-state-container {
+    padding: var(--space-md);
+  }
+
+  .feature-container {
+    gap: 1rem;
+  }
+  
+  /* Make pagination more compact on mobile */
+  .pagination-container {
+    padding: 4px;
+  }
+  
+  .pagination-pages {
+    gap: 2px;
+  }
+  
+  .pagination-button {
+    min-width: 28px;
+    padding: 3px;
+    font-size: 12px;
+  }
+  
+  .pagination-info {
+    font-size: 11px;
+  }
+  
+  /* Reduce margins and padding for better space usage */
+  .conversation-meta {
+    flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+
+  /* Code blocks on mobile */
+  .message-content pre {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+  
+  /* Upload modal adjustments */
+  .upload-modal-content {
+    width: 95%;
+    padding: var(--space-md);
+    margin: 20% auto;
+  }
+}
