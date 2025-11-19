@@ -204,8 +204,13 @@ export class ConversationRepository {
       sortOrder: 'newest',
       countOnly: false
     };
-    
+
     const settings = { ...defaults, ...options };
+
+    // If page is provided, calculate offset from page number
+    if (options.page !== undefined) {
+      settings.offset = (options.page - 1) * settings.limit;
+    }
     
     return new Promise((resolve, reject) => {
       try {
